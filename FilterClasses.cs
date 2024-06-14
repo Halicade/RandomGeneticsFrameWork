@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using static RimWorld.FleshTypeDef;
+using Verse.Noise;
 
 namespace HALI_RandomGenetics
 {
@@ -21,17 +23,18 @@ namespace HALI_RandomGenetics
         public int filler = 0;
         public bool hasPrerequisite = false;
         public String prerequisite = "";
-        public bool hasAbility = false;
+        public bool canHaveAbility = true;
+        public bool needsAbility = false;
         public List<string> excluded = new List<string>();
         public String defType = "Verse.GeneDef";
 
 
-        protected internal int cachedTotal = 0;
+        protected internal int cachedTotal = -1;
         protected internal int TotalPossibilities
         {
             get
             {
-                if (cachedTotal == 0)
+                if (cachedTotal == -1)
                 {
                     cachedTotal = possibleVals.Count() + filler;
                 }
@@ -41,33 +44,62 @@ namespace HALI_RandomGenetics
         protected internal List<GeneDef> possibleVals;
         protected internal bool valsCalculated = false;
 
-        private bool genValue()
+
+
+
+        public bool VerifyValues()
         {
-            if (valsCalculated == false)
+            if (valsCalculated)
             {
+                return possibleVals.Count != 0;
+            }
+            else
+            {
+
+                if (canHaveAbility == false && needsAbility == true)
+                {
+                    Log.Error("Random Genetics Framework encountered an error. You have canHaveAbility == false and needsAbility == true" +
+                        "\nThis is not possible. This is found on filter: " + ToString());
+                    valsCalculated = true;
+                    return false;
+                }
+
+
                 possibleVals = DefDatabase<GeneDef>.AllDefsListForReading
                 .Where(g =>
-                //g.geneClass.GetType()==GeneDef &&
+
                 g?.biostatMet >= minMetabolism &&
                 g?.biostatMet <= maxMetabolism &&
                 g?.biostatCpx >= minComplexity &&
                 g?.biostatCpx <= maxComplexity &&
                 g?.biostatArc >= minArchite &&
                 g?.biostatArc <= maxArchite &&
-                (hasAbility ? g?.abilities?.Any() == true : true) &&
-                (hasPrerequisite ? g?.prerequisite?.defName.Equals(prerequisite) == true : true) &&
+
+                //If the pawn has an ability
+                (g?.abilities?.Any() == true ? canHaveAbility : !needsAbility) &&
+
+                (!hasPrerequisite || g?.prerequisite?.defName.Equals(prerequisite) == true) &&
                 g.GetType().ToString().Equals(defType) &&
                 (exclusionTags.Empty() ? true : (g?.exclusionTags?.Any() == true ? g.exclusionTags.Intersect(exclusionTags).Any() == true : false)) &&
 
                 excluded?.Contains(g.defName) == false
                 ).ToList();
-                
-                
+
+
                 valsCalculated = true;
                 if (possibleVals.Count == 0)
                 {
-                    Log.WarningOnce("Random Genetics Framework encountered an error. There were no genes found for filter: " +
-                        "\nexclusionTags = " + String.Join(", ", exclusionTags.ToArray()) +
+                    Log.Warning("Random Genetics Framework encountered an error. There were no genes found for filter:" + ToString());
+                    return false;
+                }
+
+            }
+            return true;
+        }
+
+        public override string ToString()
+        {
+            return "\nexclusionTags = " + String.Join(", ", exclusionTags.ToArray()) +
                         "\nminMetabolism = " + minMetabolism +
                         "\nmaxMetabolism = " + maxMetabolism +
                         "\nminComplexity = " + minComplexity +
@@ -76,22 +108,17 @@ namespace HALI_RandomGenetics
                         "\nmaxArchite = " + maxArchite +
                         "\nhasPrerequisite = " + hasPrerequisite +
                         "\nprerequisite = " + prerequisite +
-                        "\nhasAbility = " + hasAbility +
+                        "\ncanHaveAbility = " + canHaveAbility +
+                        "\nneedsAbility = " + needsAbility +
                         "\ndefType = " + defType +
-                        "\nexcluded =" + String.Join(", ", excluded.ToArray())
-                        , this.GetHashCode()
-                        );
-
-                    return false;
-                }
-
-            }
-            return true;
+                        "\nexcluded =" + String.Join(", ", excluded.ToArray());
         }
-        public void getValue(Pawn pawn, bool isXenogene)
+
+        public void GetValue(Pawn pawn, bool isXenogene)
         {
-            if (genValue() == false)
+            if (VerifyValues() == false)
             {
+                Log.Error("Something happened with Random Genetics and getValue was ran before VerifyValues. Please let the auther know " + ToString());
                 return;
             }
 
@@ -124,12 +151,29 @@ namespace HALI_RandomGenetics
         public Color colorToCheck;
         public float toleranceLevel = 0.30f;
         public List<string> excluded;
+        public int filler = 0;
+        public int weight = 1;
 
-
+        private int cachedTotal = -1;
+        protected internal int TotalPossibilities
+        {
+            get
+            {
+                if (cachedTotal == -1)
+                {
+                    cachedTotal = matchingColors.Count() + filler;
+                }
+                return cachedTotal;
+            }
+        }
         protected internal List<GeneDef> matchingColors;
         protected internal bool filterCalculated = false;
 
-        public bool GenValue()
+        /// <summary>
+        /// Will generate to see how many values are created.
+        /// </summary>
+        /// <returns>false if there are no values in matchingColors</returns>
+        public bool VerifyValues()
         {
             if (filterCalculated == false)
             {
@@ -137,7 +181,7 @@ namespace HALI_RandomGenetics
                 {
 
                     Log.Error("error with ColorFilterList, <hairColor> or <skinColor> needs to be selected");
-
+                    filterCalculated = true;
                     return false;
                 }
 
@@ -153,12 +197,14 @@ namespace HALI_RandomGenetics
 
                     ).ToList();
                     //Log.Error("excluded is used? " + (filtered?.excluded?.Any() == true
-                    filterCalculated = true;
 
                     if (matchingColors.Count == 0)
                     {
                         Log.Warning("No similar HairColor were found for ColorFilterList with conditions ");
+                        return false;
                     }
+                    filterCalculated = true;
+
 
                 }
                 else
@@ -172,11 +218,13 @@ namespace HALI_RandomGenetics
                     && (excluded?.Any() == true ? (excluded.Contains(g.defName) == false) : true) == true
                     ).ToList();
 
-                    filterCalculated = true;
+
                     if (matchingColors.Count == 0)
                     {
                         Log.Warning("No similar SkinColorOverride were found for ColorFilterList with conditions ");
+                        return false;
                     }
+                    filterCalculated = true;
                 }
 
 
@@ -184,7 +232,7 @@ namespace HALI_RandomGenetics
             return filterCalculated;
 
         }
-        public bool SimilarColor(Color geneColor, Color filterColor, float toleranceLevel)
+        private bool SimilarColor(Color geneColor, Color filterColor, float toleranceLevel)
         {
 
             return
@@ -194,13 +242,10 @@ namespace HALI_RandomGenetics
         }
 
 
-        public void GetValue(Pawn pawn, bool isXenogene)
+        public void AssignGenes(Pawn pawn, bool isXenogene)
         {
-            if (GenValue() == false)
-            {
-                return;
-            }
 
+            //Needs to be rewritten to add filter
             if (matchingColors.Any())
             {
                 pawn.genes.AddGene(matchingColors.RandomElement(), isXenogene);
@@ -223,19 +268,26 @@ namespace HALI_RandomGenetics
         public GeneDef gene;
 
 
-        protected internal bool? confirmedValid;
+        protected internal bool confirmedValid;
 
-        public void GenValue(Pawn pawn, bool isXenogene)
+        public bool VerifyValues()
         {
-            if (confirmedValid == null)
+            if (confirmedValid == false)
             {
                 confirmedValid = DefDatabase<GeneDef>.AllDefsListForReading.Contains(gene);
                 if (confirmedValid == false)
                 {
                     Log.Warning("Unable to load gene with genedef " + gene.defName + " it was likely removed through cherrypicker or other means");
+                    return false;
                 }
             }
-            if (confirmedValid == true)
+            return true;
+
+        }
+
+        public void GetValue(Pawn pawn, bool isXenogene)
+        {
+            if (confirmedValid)
             {
                 pawn.genes.AddGene(gene, isXenogene);
 

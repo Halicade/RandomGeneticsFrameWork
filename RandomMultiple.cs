@@ -44,7 +44,6 @@ namespace HALI_RandomGenetics
             if (totalPossibilities == 0)
             {
 
-                totalPossibilities = filler;
                 for (int i = geneAndWeight.Count - 1; i >= 0; i--)
                 {
                     totalPossibilities += geneAndWeight[i].weight;
@@ -56,6 +55,8 @@ namespace HALI_RandomGenetics
 
                     }
                 }
+                totalPossibilities += filler;
+
                 //Log.Message("totalPossibilities has been calculated value is " + cachedProb);
             }
             return;

@@ -8,88 +8,98 @@ namespace HALI_RandomGenetics
 {
     public class Gene_Similar_Color : DefModExtension
     {
-        public bool hairColor = false;
-        public bool skinColor = false;
-        public Color colorToCheck;
-        public float toleranceLevel = 0.30f;
-        public List<string> excluded;
 
 
-        protected internal List<GeneDef> matchingColors;
-        protected internal bool filterCalculated = false;
+        public List<ColorFilterList> colorFilterList;
+        
+        protected internal bool verifyCalculated = false;
+        protected internal int filler=0;
+        protected internal int totalPossibilities = 0;
+        protected internal int totalWeight = 0;
+
+
+        public bool VerifyValues()
+        {
+            if (verifyCalculated)
+            {
+                return colorFilterList.Count != 0;
+            }
+            for (int i = colorFilterList.Count - 1; i >= 0; i--)
+            {
+                if (colorFilterList[i].VerifyValues() == false)
+                {
+                    colorFilterList.RemoveAt(i);
+                }
+            }
+            verifyCalculated = true;
+            if (colorFilterList.Count == 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Generate random value.
+        /// If the Value is greater than the total weight, return.
+        /// If not go through for loop to find where the value is that reaches that weight.
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <param name="isXenogene"></param>
+        public void AssignGenes(Pawn pawn, bool isXenogene)
+        {
+
+
+
+
+            int Rvalue = Rand.Range(0, totalPossibilities);
+
+            if (Rvalue >= totalWeight)
+            {
+                //filler value was reached
+                return;
+            }
+            else
+            {
+
+                int searchedweights = 0;
+                for (int i = 0; i < colorFilterList.Count; i++)
+                {
+                    searchedweights += colorFilterList[i].weight;
+                    if (Rvalue < searchedweights)
+                    {
+                        colorFilterList[Rvalue].AssignGenes(pawn, isXenogene);
+                        break;
+                    }
+                }
+
+            }
+
+            return;
+
+        }
 
     }
 
 
     public class Gene_Random_Color : Gene
     {
+        public bool ListVerified = false;
         public override void PostAdd()
         {
             base.PostAdd();
             Gene_Similar_Color filtered = def.GetModExtension<Gene_Similar_Color>();
-
-            if (filtered.filterCalculated == false)
+            if (ListVerified == false)
             {
-                if (filtered.hairColor == filtered.skinColor)
-                {
-                    Log.Error("error with " + this.def + ", " + this.Label + "<hairColor> or <skinColor> needs to be selected");
-                    pawn.genes.RemoveGene(this);
-                    return;
-                }
-
-                if (filtered.hairColor)
-                {
-
-                    filtered.matchingColors = DefDatabase<GeneDef>.AllDefsListForReading
-                    .Where(g =>
-                    g?.exclusionTags?.Contains("HairColor") == true &&
-                    SimilarColor(g.hairColorOverride.Value, filtered.colorToCheck, filtered.toleranceLevel)
-
-                    && (filtered?.excluded?.Any() == true ? (filtered.excluded.Contains(g.defName) == false) : true) == true
-
-                    ).ToList();
-                    //Log.Error("excluded is used? " + (filtered?.excluded?.Any() == true));
-                    filtered.filterCalculated = true;
-
-                }
-                else
-                {
-
-                    filtered.matchingColors = DefDatabase<GeneDef>.AllDefsListForReading
-                    .Where(g =>
-                    g?.exclusionTags?.Contains("SkinColorOverride") == true &&
-                    SimilarColor(g.skinColorOverride.Value, filtered.colorToCheck, filtered.toleranceLevel)
-
-                    && (filtered?.excluded?.Any() == true ? (filtered.excluded.Contains(g.defName) == false) : true) == true
-                    ).ToList();
-
-                    filtered.filterCalculated = true;
-                }
-
-
+                ListVerified = filtered.VerifyValues();
+            }
+            if (ListVerified)
+            {
+                filtered.AssignGenes(pawn, pawn.genes.IsXenogene(this));
             }
 
-            if (filtered.matchingColors.Any())
-            {
-                pawn.genes.AddGene(filtered.matchingColors.RandomElement(), pawn.genes.IsXenogene(this));
-                pawn.genes.RemoveGene(this);
-                return;
-            }
-            else
-            {
-                Log.Error("No compatible colors were found for " + this.def + ", " + this.Label);
-                pawn.genes.RemoveGene(this);
-                return;
-            }
-        }
-
-        public bool SimilarColor(Color geneColor, Color filterColor, float toleranceLevel)
-        {
-
-            return
-                Math.Abs(geneColor.r - filterColor.r) < toleranceLevel &&
-                Math.Abs(geneColor.g - filterColor.g) < toleranceLevel &&
-                Math.Abs(geneColor.b - filterColor.b) < toleranceLevel;
+            pawn.genes.RemoveGene(this);
+            return;
         }
     }
 }

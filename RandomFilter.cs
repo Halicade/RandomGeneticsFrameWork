@@ -7,69 +7,60 @@ namespace HALI_RandomGenetics
 
     public class Gene_Filtered : DefModExtension
     {
-        List<FilterList> filterList;
-        
-        public void genValues(Pawn pawn, bool isXenogene)
+        public List<FilterList> filterList;
+
+        public bool VerifyValues()
         {
-            if (filterList != null)
+
+            for (int i = filterList.Count - 1; i >= 0; i--)
             {
-                for (int i = 0; i < filterList?.Count; i++)
+                if (filterList[i].VerifyValues() == false)
                 {
-                    filterList[i].getValue(pawn, isXenogene);
+                    filterList.RemoveAt(i);
                 }
             }
+            if (filterList.Count == 0)
+            {
+                return false;
+            }
+            return true;
         }
-       
+
+        public void genValues(Pawn pawn, bool isXenogene)
+        {
+
+
+            for (int i = 0; i < filterList.Count; i++)
+            {
+                filterList[i].GetValue(pawn, isXenogene);
+            }
+
+        }
+
     }
 
 
 
     public class Gene_Random_Filtered : Gene
     {
+        private bool ListVerified = false;
+
         public override void PostAdd()
         {
             base.PostAdd();
             Gene_Filtered filtered = def.GetModExtension<Gene_Filtered>();
-            /*
-            Log.Error("printing list of filteres exclusion tags");
-            for(int i = 0; i < filtered.exclusionTags.Count; i++)
-            {
-                Log.Message(filtered.exclusionTags[i]);
-            }
-            */
-            
-            filtered.genValues(pawn, pawn.genes.IsXenogene(this));
 
+            if (ListVerified == false)
+            {
+                ListVerified = filtered.VerifyValues();
+            }
+            if (ListVerified)
+            {
+                filtered.genValues(pawn, pawn.genes.IsXenogene(this));
+            }
             pawn.genes.RemoveGene(this);
             return;
-            /*
-            Log.Error("showing possible values for filter Total possibilities is "+filtered.TotalPossibilities);
-            for(int i = 0; i < filtered.possibleVals.Count(); i++)
-            {
-                Log.Message(filtered.possibleVals.ElementAt(i));
-            }*/
 
-            /*
-            if (filtered.possibleVals.Any()==false)
-            {
-                Log.Warning("The list for the RandomFiltered gene " + this.def + ", " + this.Label + " was empty.");
-                pawn.genes.RemoveGene(this);
-                return;
-            }
-
-            int Rvalue = Rand.Range(0, filtered.TotalPossibilities);
-            if (Rvalue < filtered.possibleVals.Count)
-            {
-
-                pawn.genes.AddGene(filtered.possibleVals[Rvalue], pawn.genes.IsXenogene(this));
-                pawn.genes.RemoveGene(this);
-                return;
-            }
-            else
-            {
-                pawn.genes.RemoveGene(this);
-                return;
-            }*/
 
         }
 

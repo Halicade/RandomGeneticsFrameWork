@@ -24,23 +24,82 @@ namespace HALI_RandomGenetics
 
         public int weight = 1;
 
-
-        public bool genValues(Pawn pawn, bool isXenogene)
+        /// <summary>
+        /// Checks each list individually to remove any filters that may not be active/empty
+        /// </summary>
+        /// <returns>
+        /// True if at least 1 value list has a value. Otherwise False
+        /// </returns>
+        public bool VerifyValues()
         {
-
-            if (filterList == null)
+            if (filterList != null)
             {
-                for (int i = 0; i < filterList?.Count; i++)
+                for (int i = filterList.Count - 1; i >= 0; i--)
                 {
-                    filterList[i].getValue(pawn, isXenogene);
+                    if (filterList[i].VerifyValues() == false)
+                    {
+                        filterList.RemoveAt(i);
+                    }
                 }
             }
 
             if (colorFilterList != null)
             {
-                for (int i = 0; i < colorFilterList?.Count; i++)
+                for (int i = colorFilterList.Count - 1; i >= 0; i--)
                 {
-                    colorFilterList[i].GetValue(pawn, isXenogene);
+                    if (colorFilterList[i].VerifyValues() == false)
+                    {
+                        colorFilterList.RemoveAt(i);
+                    }
+                }
+            }
+
+            if (geneList != null)
+            {
+                for (int i = geneList.Count - 1; i >= 0; i--)
+                {
+                    if (geneList[i].VerifyValues() == false)
+                    {
+                        geneList.RemoveAt(i);
+                    }
+                }
+            }
+
+            if (filterList == null || filterList.Empty())
+            {
+                if (colorFilterList == null || filterList.Empty())
+                {
+                    if (geneList == null || filterList.Empty())
+                    {
+                        //The whole list is empty. Remove this.
+                        return false;
+
+                    }
+                }
+            }
+
+
+            return true;
+
+        }
+
+
+        public bool assignGenes(Pawn pawn, bool isXenogene)
+        {
+
+            if (filterList != null)
+            {
+                for (int i = 0; i < filterList.Count; i++)
+                {
+                    filterList[i].GetValue(pawn, isXenogene);
+                }
+            }
+
+            if (colorFilterList != null)
+            {
+                for (int i = 0; i < colorFilterList.Count; i++)
+                {
+                    colorFilterList[i].AssignGenes(pawn, isXenogene);
                 }
             }
 
@@ -49,7 +108,7 @@ namespace HALI_RandomGenetics
             {
                 for (int i = 0; i < geneList.Count; i++)
                 {
-                    geneList[i].GenValue(pawn, isXenogene);
+                    geneList[i].GetValue(pawn, isXenogene);
                 }
             }
 
@@ -62,24 +121,80 @@ namespace HALI_RandomGenetics
 
     public class Gene_MultiFilter : DefModExtension
     {
-        public int filler = 0;
-        public List<RandomFilters> randomFilters;
 
-        public bool DoAdditions(Pawn pawn, bool isXenogene)
+        public List<RandomFilters> randomFilters;
+        public int filler = 0;
+
+        protected internal bool verified = false;
+        protected internal int totalPossibilities = 0;
+        protected internal int totalWeight = 0;
+
+        public bool verifyValues()
+        {
+            if (verified == false)
+            {
+                for (int i = randomFilters.Count - 1; i >= 0; i--)
+                {
+
+                    if (randomFilters[i].VerifyValues() == false)
+                    {
+
+                        totalPossibilities += randomFilters[i].weight;
+                        randomFilters.RemoveAt(i);
+
+                    }
+                    else
+                    {
+                        totalWeight += randomFilters[i].weight;
+                        totalPossibilities += randomFilters[i].weight;
+                    }
+
+                }
+                if (randomFilters.Count == 0)
+                {
+                    //there were no possibile gene lists to be found
+                    return false;
+                }
+                totalPossibilities += filler;
+                verified = true;
+            }
+            return verified;
+        }
+
+        /// <summary>
+        /// Generate random value.
+        /// If the Value is greater than the total weight, return.
+        /// If not go through for loop to find where the value is that reaches that weight.
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <param name="isXenogene"></param>
+        public void AssignGenes(Pawn pawn, bool isXenogene)
         {
 
+            int Rvalue = Rand.Range(0, totalPossibilities);
 
+            if (Rvalue >= totalWeight)
+            {
+                //filler value was reached
+                return;
+            }
+            else
+            {
 
+                int searchedweights = 0;
+                for (int i = 0; i < randomFilters.Count; i++)
+                {
+                    searchedweights += randomFilters[i].weight;
+                    if (Rvalue < searchedweights)
+                    {
+                        randomFilters[Rvalue].assignGenes(pawn, isXenogene);
+                        break;
+                    }
+                }
 
-            int Rvalue = Rand.Range(0, randomFilters.Count);
-            randomFilters[Rvalue].genValues(pawn, isXenogene);
+            }
 
-
-
-
-
-
-            return true;
+            return;
         }
 
     }
@@ -93,16 +208,17 @@ namespace HALI_RandomGenetics
 
             Gene_MultiFilter multiFilter = def.GetModExtension<Gene_MultiFilter>();
 
-            multiFilter.DoAdditions(pawn, pawn.genes.IsXenogene(this));
-
-
-
+            if (multiFilter.verifyValues())
+            {
+                multiFilter.AssignGenes(pawn, pawn.genes.IsXenogene(this));
+            }
+            else
+            {
+                Log.Warning("Random Genetics found no genes for the gene " + this.def + " " + this.Label);
+            }
 
             pawn.genes.RemoveGene(this);
             return;
-
-
-
         }
     }
 }
