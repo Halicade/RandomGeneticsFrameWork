@@ -18,11 +18,13 @@ namespace HALI_RandomGenetics
 
     public class RandomFilters
     {
-        public List<FilterList> filterList;
-        public List<ColorFilterList> colorFilterList;
-        public List<GeneList> geneList;
+        public List<FilterList> filterList = new List<FilterList>();
+        public List<ColorFilterList> colorFilterList = new List<ColorFilterList>();
+        public List<GeneList> geneList = new List<GeneList>();
 
         public int weight = 1;
+
+        protected internal bool verifyCalculated = false;
 
         /// <summary>
         /// Checks each list individually to remove any filters that may not be active/empty
@@ -32,48 +34,45 @@ namespace HALI_RandomGenetics
         /// </returns>
         public bool VerifyValues()
         {
-            if (filterList != null)
+            if (verifyCalculated)
             {
-                for (int i = filterList.Count - 1; i >= 0; i--)
+                return true;
+            }
+
+            for (int i = geneList.Count - 1; i >= 0; i--)
+            {
+                if (geneList[i].VerifyValues() == false)
                 {
-                    if (filterList[i].VerifyValues() == false)
-                    {
-                        filterList.RemoveAt(i);
-                    }
+                    geneList.RemoveAt(i);
                 }
             }
 
-            if (colorFilterList != null)
+            for (int i = filterList.Count - 1; i >= 0; i--)
             {
-                for (int i = colorFilterList.Count - 1; i >= 0; i--)
+                if (filterList[i].VerifyValues() == false)
                 {
-                    if (colorFilterList[i].VerifyValues() == false)
-                    {
-                        colorFilterList.RemoveAt(i);
-                    }
+                    filterList.RemoveAt(i);
                 }
             }
 
-            if (geneList != null)
+            for (int i = colorFilterList.Count - 1; i >= 0; i--)
             {
-                for (int i = geneList.Count - 1; i >= 0; i--)
+                if (colorFilterList[i].VerifyValues() == false)
                 {
-                    if (geneList[i].VerifyValues() == false)
-                    {
-                        geneList.RemoveAt(i);
-                    }
+                    colorFilterList.RemoveAt(i);
                 }
             }
 
-            if (filterList == null || filterList.Empty())
+
+            verifyCalculated = true;
+            if (geneList.Empty())
             {
-                if (colorFilterList == null || filterList.Empty())
+                if (filterList.Empty())
                 {
-                    if (geneList == null || filterList.Empty())
+                    if (colorFilterList.Empty())
                     {
                         //The whole list is empty. Remove this.
                         return false;
-
                     }
                 }
             }
@@ -87,30 +86,27 @@ namespace HALI_RandomGenetics
         public bool AssignGenes(Pawn pawn, bool isXenogene)
         {
 
-            if (filterList != null)
-            {
-                for (int i = 0; i < filterList.Count; i++)
-                {
-                    filterList[i].AssignGenes(pawn, isXenogene);
-                }
-            }
 
-            if (colorFilterList != null)
+            for (int i = 0; i < geneList.Count; i++)
             {
-                for (int i = 0; i < colorFilterList.Count; i++)
-                {
-                    colorFilterList[i].AssignGenes(pawn, isXenogene);
-                }
+                geneList[i].AssignGenes(pawn, isXenogene);
             }
 
 
-            if (geneList != null)
+
+            for (int i = 0; i < filterList.Count; i++)
             {
-                for (int i = 0; i < geneList.Count; i++)
-                {
-                    geneList[i].AssignGenes(pawn, isXenogene);
-                }
+                filterList[i].AssignGenes(pawn, isXenogene);
+
             }
+
+
+            for (int i = 0; i < colorFilterList.Count; i++)
+            {
+                colorFilterList[i].AssignGenes(pawn, isXenogene);
+            }
+
+
 
             return true;
         }
@@ -125,40 +121,45 @@ namespace HALI_RandomGenetics
         public List<RandomFilters> randomFilters;
         public int filler = 0;
 
-        protected internal bool verified = false;
+        protected internal bool verifyCalculated = false;
         protected internal int totalPossibilities = 0;
         protected internal int totalWeight = 0;
 
         public bool VerifyValues()
         {
-            if (verified == false)
+            if (verifyCalculated)
             {
-                for (int i = randomFilters.Count - 1; i >= 0; i--)
-                {
-
-                    if (randomFilters[i].VerifyValues() == false)
-                    {
-
-                        totalPossibilities += randomFilters[i].weight;
-                        randomFilters.RemoveAt(i);
-
-                    }
-                    else
-                    {
-                        totalWeight += randomFilters[i].weight;
-                        totalPossibilities += randomFilters[i].weight;
-                    }
-
-                }
-                if (randomFilters.Count == 0)
-                {
-                    //there were no possibile gene lists to be found
-                    return false;
-                }
-                totalPossibilities += filler;
-                verified = true;
+                return true;
             }
-            return verified;
+
+
+            for (int i = randomFilters.Count - 1; i >= 0; i--)
+            {
+
+                if (randomFilters[i].VerifyValues() == false)
+                {
+
+                    totalPossibilities += randomFilters[i].weight;
+                    randomFilters.RemoveAt(i);
+
+                }
+                else
+                {
+                    totalWeight += randomFilters[i].weight;
+                    totalPossibilities += randomFilters[i].weight;
+                }
+
+            }
+            totalPossibilities += filler;
+            verifyCalculated = true;
+            if (randomFilters.Count == 0)
+            {
+                //there were no possibile gene lists to be found
+                return false;
+            }
+
+
+            return true;
         }
 
         /// <summary>

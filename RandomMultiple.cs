@@ -19,7 +19,7 @@ namespace HALI_RandomGenetics
 
         }
 
-        public bool GetValidity()
+        public bool VerifyValue()
         {
             return DefDatabase<GeneDef>.AllDefsListForReading.Contains(gene);
         }
@@ -32,34 +32,39 @@ namespace HALI_RandomGenetics
 
 
         protected internal int totalPossibilities = 0;
+        protected internal bool verifyCalculated = false;
 
         /// <summary>
         /// Goes through the geneAndWeight list and makes sure each entry is valid.
         /// will then calculate the total possibilities available
         /// </summary>
-        public void CalculateTotalPossibilities()
+        /// <returns>True if this was already ran. False if first run and there are no objects in list.</returns>
+        public bool VerifyValues()
         {
-
-            //Log.Message("cached prob is currently " + cachedProb);
-            if (totalPossibilities == 0)
+            if (verifyCalculated)
             {
-
-                for (int i = geneAndWeight.Count - 1; i >= 0; i--)
-                {
-                    totalPossibilities += geneAndWeight[i].weight;
-
-                    if (geneAndWeight[i].GetValidity() == false)
-                    {
-                        
-                        geneAndWeight.RemoveAt(i);
-
-                    }
-                }
-                totalPossibilities += filler;
-
-                //Log.Message("totalPossibilities has been calculated value is " + cachedProb);
+                return true;
             }
-            return;
+
+            for (int i = geneAndWeight.Count - 1; i >= 0; i--)
+            {
+                totalPossibilities += geneAndWeight[i].weight;
+
+                if (geneAndWeight[i].VerifyValue() == false)
+                {
+
+                    geneAndWeight.RemoveAt(i);
+
+                }
+            }
+            verifyCalculated = true;
+            totalPossibilities += filler;
+            if (geneAndWeight.Count == 0)
+            {
+                return false;
+            }
+
+            return true; ;
         }
 
         /// <summary>
@@ -91,31 +96,40 @@ namespace HALI_RandomGenetics
     {
         //public List<List<GeneDef>> genes;
         public List<GeneticList> geneList;
-        private bool checkedList = false;
+        private bool verifyCalculated = false;
+
+
 
         /// <summary>
         /// Will remove a geneList entry if all lists are blank
         /// </summary>
-        private void CheckValidity()
+        public bool VerifyValues()
         {
-            if (!checkedList)
+            if (verifyCalculated)
             {
-                for (int i = geneList.Count - 1; i >= 0; i--)
-                {
-                    geneList[i].CalculateTotalPossibilities();
-                    if (geneList[i].geneAndWeight.Count == 0)
-                    {
-                        geneList.RemoveAt(i);
-                    }
-                }
-                checkedList = true;
+                return true;
             }
-            return;
+
+            for (int i = geneList.Count - 1; i >= 0; i--)
+            {
+                geneList[i].VerifyValues();
+                if (geneList[i].geneAndWeight.Count == 0)
+                {
+                    geneList.RemoveAt(i);
+                }
+            }
+            verifyCalculated = true;
+            if (geneList.Count == 0)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public void AssignGene(Pawn pawn, bool isXenogene)
         {
-            CheckValidity();
+
             for (int i = 0; i < geneList.Count; i++)
             {
 
@@ -135,9 +149,17 @@ namespace HALI_RandomGenetics
             //Log.Message("Filler is " + multi.geneList[0].filler+ multi.geneList[0].geneAndWeight[0].weight);
             //multi.AssignGene(pawn, pawn.genes.IsXenogene(this));
 
-            
-            //multi.CheckValidity();
-            multi.AssignGene(pawn, pawn.genes.IsXenogene(this));
+
+            if (multi.VerifyValues())
+            {
+                multi.AssignGene(pawn, pawn.genes.IsXenogene(this));
+
+            }
+            else
+            {
+                Log.Warning("Random Genetics found no genes for the gene " + this.def + " " + this.Label);
+            }
+
 
             /*
             for (int i = 0; i < multi.geneList.Count; i++)

@@ -127,8 +127,7 @@ namespace HALI_RandomGenetics
             int Rvalue = Rand.Range(0, TotalPossibilities);
             if (Rvalue < possibleVals.Count)
             {
-                //Log.Message("Adding the random gene " + possibleVals[Rvalue]);
-
+                
                 pawn.genes.AddGene(possibleVals[Rvalue], isXenogene);
 
                 return;

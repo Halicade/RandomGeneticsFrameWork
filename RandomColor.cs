@@ -20,9 +20,10 @@ namespace HALI_RandomGenetics
 
         public bool VerifyValues()
         {
+
             if (verifyCalculated)
             {
-                return colorFilterList.Count != 0;
+                return true;
             }
             for (int i = colorFilterList.Count - 1; i >= 0; i--)
             {
@@ -50,8 +51,6 @@ namespace HALI_RandomGenetics
         {
 
 
-
-
             int Rvalue = Rand.Range(0, totalPossibilities);
 
             if (Rvalue >= totalWeight)
@@ -68,15 +67,13 @@ namespace HALI_RandomGenetics
                     searchedweights += colorFilterList[i].weight;
                     if (Rvalue < searchedweights)
                     {
-                        colorFilterList[Rvalue].AssignGenes(pawn, isXenogene);
+                        colorFilterList[i].AssignGenes(pawn, isXenogene);
                         break;
                     }
                 }
-
             }
 
             return;
-
         }
 
     }
@@ -89,14 +86,16 @@ namespace HALI_RandomGenetics
         {
             base.PostAdd();
             Gene_Similar_Color filtered = def.GetModExtension<Gene_Similar_Color>();
-            if (ListVerified == false)
-            {
-                ListVerified = filtered.VerifyValues();
-            }
-            if (ListVerified)
+
+            if (filtered.VerifyValues())
             {
                 filtered.AssignGenes(pawn, pawn.genes.IsXenogene(this));
             }
+            else
+            {
+                Log.Warning("Random Genetics found no genes for the gene " + this.def + " " + this.Label);
+            }
+
 
             pawn.genes.RemoveGene(this);
             return;
