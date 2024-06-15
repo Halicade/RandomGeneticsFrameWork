@@ -27,6 +27,7 @@ namespace HALI_RandomGenetics
         public bool needsAbility = false;
         public List<string> excluded = new List<string>();
         public String defType = "Verse.GeneDef";
+        public int weight=1;
 
 
         protected internal int cachedTotal = -1;
@@ -114,7 +115,7 @@ namespace HALI_RandomGenetics
                         "\nexcluded =" + String.Join(", ", excluded.ToArray());
         }
 
-        public void GetValue(Pawn pawn, bool isXenogene)
+        public void AssignGenes(Pawn pawn, bool isXenogene)
         {
             if (VerifyValues() == false)
             {
@@ -122,8 +123,7 @@ namespace HALI_RandomGenetics
                 return;
             }
 
-            //this is for fillers within the filter gene itself.
-            //used if 
+
             int Rvalue = Rand.Range(0, TotalPossibilities);
             if (Rvalue < possibleVals.Count)
             {
@@ -131,13 +131,11 @@ namespace HALI_RandomGenetics
 
                 pawn.genes.AddGene(possibleVals[Rvalue], isXenogene);
 
-                //pawn.genes.RemoveGene(this);
                 return;
             }
             else
             {
                 //this reached a filler
-                //pawn.genes.RemoveGene(this);
                 return;
             }
         }
@@ -285,7 +283,7 @@ namespace HALI_RandomGenetics
 
         }
 
-        public void GetValue(Pawn pawn, bool isXenogene)
+        public void AssignGenes(Pawn pawn, bool isXenogene)
         {
             if (confirmedValid)
             {

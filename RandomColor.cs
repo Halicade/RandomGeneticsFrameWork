@@ -82,7 +82,7 @@ namespace HALI_RandomGenetics
     }
 
 
-    public class Gene_Random_Color : Gene
+    public class Random_Color_List : Gene
     {
         public bool ListVerified = false;
         public override void PostAdd()

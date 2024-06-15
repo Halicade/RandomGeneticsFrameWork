@@ -8,31 +8,64 @@ namespace HALI_RandomGenetics
     public class Gene_Filtered : DefModExtension
     {
         public List<FilterList> filterList;
+        public int filler = 0;
+
+        protected internal bool verified = false;
+        protected internal int totalPossibilities = 0;
+        protected internal int totalWeight = 0;
+
 
         public bool VerifyValues()
         {
-
-            for (int i = filterList.Count - 1; i >= 0; i--)
+            
+            if (verified == false)
             {
-                if (filterList[i].VerifyValues() == false)
+                for (int i = filterList.Count - 1; i >= 0; i--)
                 {
-                    filterList.RemoveAt(i);
+                    if (filterList[i].VerifyValues() == false)
+                    {
+                        totalPossibilities += filterList[i].weight;
+                        filterList.RemoveAt(i);
+                    }
+                    else
+                    {
+                        totalWeight += filterList[i].weight;
+                        totalPossibilities += filterList[i].weight;
+                    }
                 }
+                if (filterList.Count == 0)
+                {
+                    return false;
+                }
+                totalPossibilities += filler;
+                verified = true;
             }
-            if (filterList.Count == 0)
-            {
-                return false;
-            }
-            return true;
+            return verified;
         }
 
-        public void genValues(Pawn pawn, bool isXenogene)
+        public void AssignGenes(Pawn pawn, bool isXenogene)
         {
-
-
-            for (int i = 0; i < filterList.Count; i++)
+            int Rvalue = Rand.Range(0, totalPossibilities);
+            
+            if (Rvalue >= totalWeight)
             {
-                filterList[i].GetValue(pawn, isXenogene);
+                //filler value was reached
+                return;
+            }
+            else
+            {
+
+                int searchedweights = 0;
+                for (int i = 0; i < filterList.Count; i++)
+                {
+                    searchedweights += filterList[i].weight;
+                    if (Rvalue < searchedweights)
+                    {
+                        filterList[i].AssignGenes(pawn, isXenogene);
+                        break;
+                    }
+                }
+
             }
 
         }
@@ -41,7 +74,7 @@ namespace HALI_RandomGenetics
 
 
 
-    public class Gene_Random_Filtered : Gene
+    public class Random_Filter_List : Gene
     {
         private bool ListVerified = false;
 
@@ -52,11 +85,11 @@ namespace HALI_RandomGenetics
 
             if (ListVerified == false)
             {
-                ListVerified = filtered.VerifyValues();
+                ListVerified = filtered.VerifyValues();   
             }
             if (ListVerified)
             {
-                filtered.genValues(pawn, pawn.genes.IsXenogene(this));
+                filtered.AssignGenes(pawn, pawn.genes.IsXenogene(this));
             }
             pawn.genes.RemoveGene(this);
             return;

@@ -87,7 +87,7 @@ namespace HALI_RandomGenetics
         }
     }
 
-    public class Gene_Multi : DefModExtension
+    public class Multi_Rand_List : DefModExtension
     {
         //public List<List<GeneDef>> genes;
         public List<GeneticList> geneList;
@@ -125,13 +125,13 @@ namespace HALI_RandomGenetics
         }
     }
 
-    public class Multiple_Random_Genes : Gene
+    public class Multiple_Random_Lists : Gene
     {
         public override void PostAdd()
         {
             base.PostAdd();
 
-            Gene_Multi multi = def.GetModExtension<Gene_Multi>();
+            Multi_Rand_List multi = def.GetModExtension<Multi_Rand_List>();
             //Log.Message("Filler is " + multi.geneList[0].filler+ multi.geneList[0].geneAndWeight[0].weight);
             //multi.AssignGene(pawn, pawn.genes.IsXenogene(this));
 

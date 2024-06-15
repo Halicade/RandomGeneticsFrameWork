@@ -84,14 +84,14 @@ namespace HALI_RandomGenetics
         }
 
 
-        public bool assignGenes(Pawn pawn, bool isXenogene)
+        public bool AssignGenes(Pawn pawn, bool isXenogene)
         {
 
             if (filterList != null)
             {
                 for (int i = 0; i < filterList.Count; i++)
                 {
-                    filterList[i].GetValue(pawn, isXenogene);
+                    filterList[i].AssignGenes(pawn, isXenogene);
                 }
             }
 
@@ -108,7 +108,7 @@ namespace HALI_RandomGenetics
             {
                 for (int i = 0; i < geneList.Count; i++)
                 {
-                    geneList[i].GetValue(pawn, isXenogene);
+                    geneList[i].AssignGenes(pawn, isXenogene);
                 }
             }
 
@@ -119,7 +119,7 @@ namespace HALI_RandomGenetics
 
 
 
-    public class Gene_MultiFilter : DefModExtension
+    public class Any_List_Random : DefModExtension
     {
 
         public List<RandomFilters> randomFilters;
@@ -129,7 +129,7 @@ namespace HALI_RandomGenetics
         protected internal int totalPossibilities = 0;
         protected internal int totalWeight = 0;
 
-        public bool verifyValues()
+        public bool VerifyValues()
         {
             if (verified == false)
             {
@@ -187,7 +187,7 @@ namespace HALI_RandomGenetics
                     searchedweights += randomFilters[i].weight;
                     if (Rvalue < searchedweights)
                     {
-                        randomFilters[Rvalue].assignGenes(pawn, isXenogene);
+                        randomFilters[i].AssignGenes(pawn, isXenogene);
                         break;
                     }
                 }
@@ -200,15 +200,15 @@ namespace HALI_RandomGenetics
     }
 
 
-    public class Gene_Multi_Filter : Gene
+    public class Random_Any_List : Gene
     {
         public override void PostAdd()
         {
             base.PostAdd();
 
-            Gene_MultiFilter multiFilter = def.GetModExtension<Gene_MultiFilter>();
+            Any_List_Random multiFilter = def.GetModExtension<Any_List_Random>();
 
-            if (multiFilter.verifyValues())
+            if (multiFilter.VerifyValues())
             {
                 multiFilter.AssignGenes(pawn, pawn.genes.IsXenogene(this));
             }
