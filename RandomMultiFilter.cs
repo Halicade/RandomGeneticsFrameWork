@@ -16,7 +16,7 @@ namespace HALI_RandomGenetics
 
 
 
-    public class RandomFilters
+    public class RandomAny
     {
         public List<FilterList> filterList = new List<FilterList>();
         public List<ColorFilterList> colorFilterList = new List<ColorFilterList>();
@@ -38,7 +38,7 @@ namespace HALI_RandomGenetics
             {
                 return true;
             }
-
+            
             for (int i = geneList.Count - 1; i >= 0; i--)
             {
                 if (geneList[i].VerifyValues() == false)
@@ -54,7 +54,7 @@ namespace HALI_RandomGenetics
                     filterList.RemoveAt(i);
                 }
             }
-
+            
             for (int i = colorFilterList.Count - 1; i >= 0; i--)
             {
                 if (colorFilterList[i].VerifyValues() == false)
@@ -118,7 +118,7 @@ namespace HALI_RandomGenetics
     public class Any_List_Random : DefModExtension
     {
 
-        public List<RandomFilters> randomFilters;
+        public List<RandomAny> randomAny;
         public int filler = 0;
 
         protected internal bool verifyCalculated = false;
@@ -133,26 +133,26 @@ namespace HALI_RandomGenetics
             }
 
 
-            for (int i = randomFilters.Count - 1; i >= 0; i--)
+            for (int i = randomAny.Count - 1; i >= 0; i--)
             {
 
-                if (randomFilters[i].VerifyValues() == false)
+                if (randomAny[i].VerifyValues() == false)
                 {
 
-                    totalPossibilities += randomFilters[i].weight;
-                    randomFilters.RemoveAt(i);
+                    totalPossibilities += randomAny[i].weight;
+                    randomAny.RemoveAt(i);
 
                 }
                 else
                 {
-                    totalWeight += randomFilters[i].weight;
-                    totalPossibilities += randomFilters[i].weight;
+                    totalWeight += randomAny[i].weight;
+                    totalPossibilities += randomAny[i].weight;
                 }
 
             }
             totalPossibilities += filler;
             verifyCalculated = true;
-            if (randomFilters.Count == 0)
+            if (randomAny.Count == 0)
             {
                 //there were no possibile gene lists to be found
                 return false;
@@ -183,12 +183,12 @@ namespace HALI_RandomGenetics
             {
 
                 int searchedweights = 0;
-                for (int i = 0; i < randomFilters.Count; i++)
+                for (int i = 0; i < randomAny.Count; i++)
                 {
-                    searchedweights += randomFilters[i].weight;
+                    searchedweights += randomAny[i].weight;
                     if (Rvalue < searchedweights)
                     {
-                        randomFilters[i].AssignGenes(pawn, isXenogene);
+                        randomAny[i].AssignGenes(pawn, isXenogene);
                         break;
                     }
                 }

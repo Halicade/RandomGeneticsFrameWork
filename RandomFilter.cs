@@ -10,43 +10,49 @@ namespace HALI_RandomGenetics
         public List<FilterList> filterList;
         public int filler = 0;
 
-        protected internal bool verified = false;
+        protected internal bool verifyCalculated = false;
         protected internal int totalPossibilities = 0;
         protected internal int totalWeight = 0;
 
 
         public bool VerifyValues()
         {
-            
-            if (verified == false)
+
+            if (verifyCalculated)
             {
-                for (int i = filterList.Count - 1; i >= 0; i--)
-                {
-                    if (filterList[i].VerifyValues() == false)
-                    {
-                        totalPossibilities += filterList[i].weight;
-                        filterList.RemoveAt(i);
-                    }
-                    else
-                    {
-                        totalWeight += filterList[i].weight;
-                        totalPossibilities += filterList[i].weight;
-                    }
-                }
-                if (filterList.Count == 0)
-                {
-                    return false;
-                }
-                totalPossibilities += filler;
-                verified = true;
+                return true;
             }
-            return verified;
+
+
+            for (int i = filterList.Count - 1; i >= 0; i--)
+            {
+                if (filterList[i].VerifyValues() == false)
+                {
+                    totalPossibilities += filterList[i].weight;
+                    filterList.RemoveAt(i);
+                }
+                else
+                {
+                    totalWeight += filterList[i].weight;
+                    totalPossibilities += filterList[i].weight;
+                }
+            }
+            totalPossibilities += filler;
+            verifyCalculated = true;
+            if (filterList.Count == 0)
+            {
+                return false;
+            }
+
+
+
+            return true; ;
         }
 
         public void AssignGenes(Pawn pawn, bool isXenogene)
         {
             int Rvalue = Rand.Range(0, totalPossibilities);
-            
+
             if (Rvalue >= totalWeight)
             {
                 //filler value was reached
@@ -83,13 +89,14 @@ namespace HALI_RandomGenetics
             base.PostAdd();
             Gene_Filtered filtered = def.GetModExtension<Gene_Filtered>();
 
-            if (ListVerified == false)
-            {
-                ListVerified = filtered.VerifyValues();   
-            }
-            if (ListVerified)
+
+            if (filtered.VerifyValues())
             {
                 filtered.AssignGenes(pawn, pawn.genes.IsXenogene(this));
+            }
+            else
+            {
+                Log.Warning("Random Genetics found no genes for the gene " + this.def + " " + this.Label);
             }
             pawn.genes.RemoveGene(this);
             return;

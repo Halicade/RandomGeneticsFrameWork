@@ -7,13 +7,15 @@ using UnityEngine;
 using Verse;
 using static RimWorld.FleshTypeDef;
 using Verse.Noise;
+using BetterPrerequisites;
+using RimWorld;
 
 namespace HALI_RandomGenetics
 {
 
     public class FilterList
     {
-        public List<string> exclusionTags = new List<string>();
+        public List<string> exclusionTags;
         public int minMetabolism = -999;
         public int maxMetabolism = 999;
         public int minComplexity = -999;
@@ -21,27 +23,16 @@ namespace HALI_RandomGenetics
         public int minArchite = 0;
         public int maxArchite = 0;
         public int filler = 0;
-        public bool hasPrerequisite = false;
-        public String prerequisite = "";
+        public bool canHavePrerequisite = false;
+        public List<string> needsPrerequisite;
         public bool canHaveAbility = true;
         public bool needsAbility = false;
-        public List<string> excluded = new List<string>();
+        public List<string> excluded;
         public String defType = "Verse.GeneDef";
-        public int weight=1;
+        public int weight = 1;
 
 
         protected internal int cachedTotal = -1;
-        protected internal int TotalPossibilities
-        {
-            get
-            {
-                if (cachedTotal == -1)
-                {
-                    cachedTotal = possibleVals.Count() + filler;
-                }
-                return cachedTotal;
-            }
-        }
         protected internal List<GeneDef> possibleVals;
         protected internal bool valsCalculated = false;
 
@@ -50,16 +41,23 @@ namespace HALI_RandomGenetics
 
         public bool VerifyValues()
         {
+
             if (valsCalculated)
             {
                 return possibleVals.Count != 0;
             }
             else
             {
-
                 if (canHaveAbility == false && needsAbility == true)
                 {
-                    Log.Error("Random Genetics Framework encountered an error. You have canHaveAbility == false and needsAbility == true" +
+                    Log.Error("Random Genetics Framework encountered an error. You have canHaveAbility = false and needsAbility = true" +
+                        "\nThis is not possible. This is found on filter: " + ToString());
+                    valsCalculated = true;
+                    return false;
+                }
+                if (canHavePrerequisite == false && needsPrerequisite != null)
+                {
+                    Log.Error("Random Genetics Framework encountered an error. You have canHavePrerequisite = false and needsPrerequisite is empty" +
                         "\nThis is not possible. This is found on filter: " + ToString());
                     valsCalculated = true;
                     return false;
@@ -79,17 +77,18 @@ namespace HALI_RandomGenetics
                 //If the pawn has an ability
                 (g?.abilities?.Any() == true ? canHaveAbility : !needsAbility) &&
 
-                (!hasPrerequisite || g?.prerequisite?.defName.Equals(prerequisite) == true) &&
+                CheckPrerequisites(g) &&
+
                 g.GetType().ToString().Equals(defType) &&
-                (exclusionTags.Empty() ? true : (g?.exclusionTags?.Any() == true ? g.exclusionTags.Intersect(exclusionTags).Any() == true : false)) &&
+                CheckExclusionTags(g) &&
 
-                excluded?.Contains(g.defName) == false
+                (excluded == null ? true : excluded?.Contains(g.defName) == false)
                 ).ToList();
-
 
                 valsCalculated = true;
                 if (possibleVals.Count == 0)
                 {
+
                     Log.Warning("Random Genetics Framework encountered an error. There were no genes found for filter:" + ToString());
                     return false;
                 }
@@ -100,34 +99,212 @@ namespace HALI_RandomGenetics
 
         public override string ToString()
         {
-            return "\nexclusionTags = " + String.Join(", ", exclusionTags.ToArray()) +
-                        "\nminMetabolism = " + minMetabolism +
+
+            string tostringText = "\nexclusionTags = ";
+
+            if (exclusionTags != null)
+            {
+                tostringText += String.Join(", ", exclusionTags.ToArray());
+            }
+            else
+            {
+                tostringText += "null";
+            }
+
+            tostringText += "\nminMetabolism = " + minMetabolism +
                         "\nmaxMetabolism = " + maxMetabolism +
                         "\nminComplexity = " + minComplexity +
                         "\nmaxComplexity = " + maxComplexity +
                         "\nminArchite = " + minArchite +
                         "\nmaxArchite = " + maxArchite +
-                        "\nhasPrerequisite = " + hasPrerequisite +
-                        "\nprerequisite = " + prerequisite +
-                        "\ncanHaveAbility = " + canHaveAbility +
+                        "\nhasPrerequisite = " + canHavePrerequisite +
+                        "\nneedsPrerequisite = ";
+            if (needsPrerequisite != null)
+            {
+                tostringText += String.Join(", ", needsPrerequisite.ToArray());
+
+            }
+            else
+            {
+                tostringText += "null";
+            }
+
+            tostringText += "\ncanHaveAbility = " + canHaveAbility +
                         "\nneedsAbility = " + needsAbility +
                         "\ndefType = " + defType +
-                        "\nexcluded =" + String.Join(", ", excluded.ToArray());
+                        "\nexcluded = ";
+            if (excluded != null)
+            {
+                tostringText += String.Join(", ", excluded.ToArray());
+            }
+            else
+            {
+                tostringText += "null";
+            }
+            return tostringText;
+
+        }
+
+        private bool CheckExclusionTags(GeneDef g)
+        {
+            if (exclusionTags == null)
+            {
+                return true;
+            }
+            if (g?.exclusionTags == null)
+            {
+                return false;
+            }
+            if (exclusionTags.Intersect(g.exclusionTags).Any())
+            {
+                return true;
+            }
+            return false;
+
+        }
+
+
+        private bool CheckPrerequisites(GeneDef g)
+        {
+
+
+            //This is for if the pawn can have a prerequsite only
+            if (needsPrerequisite == null)
+            {
+                if (canHavePrerequisite == true)
+                {
+                    return true;
+                }
+            }
+
+            //This is for if the gene can't have a prerequisite and it does
+            if (canHavePrerequisite == false)
+            {
+
+                if (g?.prerequisite != null)
+                {
+
+                    return false;
+                }
+                if (ModsConfig.IsActive("redmattis.betterprerequisites"))
+                {
+                    if (CheckBetterPrerequisitesEmpty(g))
+                    {
+                        return true;
+                    }
+                }
+                return true;
+            }
+            //At this point, we know needsPrerequisite is not null and we know canHavePrerequisite is true
+
+            //Need to see if gene does not have prerequisites and betterPrerequisites is empty
+            if (g?.prerequisite == null)
+            {
+                if (ModsConfig.IsActive("redmattis.betterprerequisites"))
+                {
+                    return (CheckBetterPrerequisites(g));
+
+                }
+                return false;
+            }
+
+            //Now need to see if genes prerequisite matches one of filters
+            if (needsPrerequisite.Contains(g.prerequisite.defName))
+            {
+                return true;
+            }
+            else
+            {
+                if (ModsConfig.IsActive("redmattis.betterprerequisites"))
+                {
+                    return CheckBetterPrerequisites(g);
+                }
+            }
+            //If no match was found return false
+            return false;
+        }
+
+        /// <summary>
+        /// Code was stolen with permission from RedMattis' Big and Small - Framework
+        /// Checks to see if GenePrerequisites has any prerequisites stored.
+        /// </summary>
+        /// <param name="g"></param>
+        /// <returns></returns>
+        private bool CheckBetterPrerequisitesEmpty(GeneDef g)
+        {
+
+            if (!g.HasModExtension<BetterPrerequisites.GenePrerequisites>())
+            {
+                return true;
+            }
+            GenePrerequisites betterPrereqs = g.GetModExtension<BetterPrerequisites.GenePrerequisites>();
+
+            if (betterPrereqs?.prerequisiteSets == null)
+            {
+
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Will check to see if betterPrerequisites has a gene and if it matches our prerequisite list
+        /// </summary>
+        /// <param name="g"></param>
+        /// <returns></returns>
+        private bool CheckBetterPrerequisites(GeneDef g)
+        {
+
+            //Log.Message("Checking better prerequisites");
+
+            if (!g.HasModExtension<BetterPrerequisites.GenePrerequisites>())
+            {
+                return false;
+            }
+            GenePrerequisites betterPrereqs = g.GetModExtension<BetterPrerequisites.GenePrerequisites>();
+
+            if (betterPrereqs?.prerequisiteSets == null)
+            {
+                //we don't care if it's empty
+                return true;
+            }
+
+            foreach (var prerequisiteSet in betterPrereqs.prerequisiteSets)
+            {
+                if (prerequisiteSet.prerequisites != null)
+                {
+                    bool result = false;
+                    switch (prerequisiteSet.type)
+                    {
+                        //Need to see if the prerequisite is found in any of these cases
+                        case PrerequisiteSet.PrerequisiteType.AnyOf:
+
+                            result = prerequisiteSet.prerequisites.Any(geneName => needsPrerequisite.Any(y => y == geneName));
+                            break;
+                        case PrerequisiteSet.PrerequisiteType.AllOf:
+                            result = prerequisiteSet.prerequisites.All(geneName => needsPrerequisite.Any(y => y == geneName));
+                            break;
+                            /*
+                             * We don't want to check for NoneOf
+                        case PrerequisiteSet.PrerequisiteType.NoneOf:
+                            result = prerequisiteSet.prerequisites.All(geneName => prerequisite.All(y => y != geneName));
+                            break;
+                            */
+                    }
+                    if (!result) return false;
+                }
+            }
+
+
+
+            return true;
         }
 
         public void AssignGenes(Pawn pawn, bool isXenogene)
         {
-            if (VerifyValues() == false)
-            {
-                Log.Error("Something happened with Random Genetics and getValue was ran before VerifyValues. Please let the auther know " + ToString());
-                return;
-            }
-
-
-            int Rvalue = Rand.Range(0, TotalPossibilities);
+            int Rvalue = Rand.Range(0, possibleVals.Count() + filler);
             if (Rvalue < possibleVals.Count)
             {
-                
                 pawn.genes.AddGene(possibleVals[Rvalue], isXenogene);
 
                 return;
@@ -143,26 +320,23 @@ namespace HALI_RandomGenetics
 
     public class ColorFilterList
     {
-        public bool hairColor = false;
-        public bool skinColor = false;
+
         public Color colorToCheck;
         public float toleranceLevel = 0.30f;
         public List<string> excluded;
         public int filler = 0;
         public int weight = 1;
+        public String defType = "Verse.GeneDef";
 
-        private int cachedTotal = -1;
-        protected internal int TotalPossibilities
+
+
+        public ColorType colorType;
+
+        public enum ColorType
         {
-            get
-            {
-                if (cachedTotal == -1)
-                {
-                    cachedTotal = matchingColors.Count() + filler;
-                }
-                return cachedTotal;
-            }
+            HairColor, Skincolor
         }
+        protected internal int totalPossibilities = 0;
         protected internal List<GeneDef> matchingColors;
         protected internal bool filterCalculated = false;
 
@@ -172,18 +346,14 @@ namespace HALI_RandomGenetics
         /// <returns>false if there are no values in matchingColors</returns>
         public bool VerifyValues()
         {
-            if (filterCalculated == false)
+            if (filterCalculated)
             {
-                if (hairColor == skinColor)
-                {
+                return true;
+            }
 
-                    Log.Error("error with ColorFilterList, <hairColor> or <skinColor> needs to be selected");
-                    filterCalculated = true;
-                    return false;
-                }
-
-                if (hairColor)
-                {
+            switch (colorType)
+            {
+                case ColorType.HairColor:
                     //DefDatabase<GeneDef>;
                     matchingColors = DefDatabase<GeneDef>.AllDefsListForReading
                     .Where(g =>
@@ -193,19 +363,18 @@ namespace HALI_RandomGenetics
                     && (excluded?.Any() == true ? (excluded.Contains(g.defName) == false) : true) == true
 
                     ).ToList();
-                    //Log.Error("excluded is used? " + (filtered?.excluded?.Any() == true
 
                     if (matchingColors.Count == 0)
                     {
-                        Log.Warning("No similar HairColor were found for ColorFilterList with conditions ");
+                        Log.Warning("No similar HairColor were found for ColorFilterList with conditions " + ToString());
                         return false;
                     }
+                    totalPossibilities = matchingColors.Count + filler;
                     filterCalculated = true;
+                    break;
 
+                case ColorType.Skincolor:
 
-                }
-                else
-                {
 
                     matchingColors = DefDatabase<GeneDef>.AllDefsListForReading
                     .Where(g =>
@@ -218,17 +387,54 @@ namespace HALI_RandomGenetics
 
                     if (matchingColors.Count == 0)
                     {
-                        Log.Warning("No similar SkinColorOverride were found for ColorFilterList with conditions ");
+                        Log.Warning("No similar SkinColorOverride were found for ColorFilterList with conditions " + ToString());
                         return false;
                     }
+                    totalPossibilities = matchingColors.Count + filler;
                     filterCalculated = true;
-                }
+                    break;
 
-
+                default:
+                    Log.Error("You entered the wrong tag for <colorType> it should be <colorType>SkinColor</colorType> or <colorType>HairColor</colorType>" + ToString());
+                    return false;
+                    //break;
             }
+
+
+
             return filterCalculated;
 
         }
+
+        public override string ToString()
+        {
+            if (excluded == null)
+            {
+                return
+                    "\ncolorType = " + colorType.ToString() +
+                    "\ncolorToCheck = " + colorToCheck.ToString() +
+                    "\ntoleranceLevel = " + toleranceLevel +
+                    "\nfiller = " + filler +
+                    "\nweight = " + weight +
+                    "\ndefType = " + defType +
+                    "\nexcluded = null";
+
+
+
+            }
+            else
+            {
+                return
+                    "\ncolorToCheck = " + colorToCheck.ToString() +
+                    "\ntoleranceLevel = " + toleranceLevel +
+                    "\nfiller = " + filler +
+                    "\nweight = " + weight +
+                    "\ndefType = " + defType +
+                    "\nexcluded = " + String.Join(", ", excluded.ToArray());
+            }
+
+        }
+
         private bool SimilarColor(Color geneColor, Color filterColor, float toleranceLevel)
         {
 
@@ -242,19 +448,19 @@ namespace HALI_RandomGenetics
         public void AssignGenes(Pawn pawn, bool isXenogene)
         {
 
-            //Needs to be rewritten to add filter
-            if (matchingColors.Any())
+
+
+            int Rvalue = Rand.Range(0, totalPossibilities);
+            if (Rvalue < matchingColors.Count)
             {
-                pawn.genes.AddGene(matchingColors.RandomElement(), isXenogene);
+                pawn.genes.AddGene(matchingColors[Rvalue], isXenogene);
 
                 return;
             }
             else
             {
-                Log.Error("No compatible colors were found for INSERT TOSTRING HERE");
-
+                //this reached a filler
                 return;
-
             }
         }
     }
@@ -265,31 +471,28 @@ namespace HALI_RandomGenetics
         public GeneDef gene;
 
 
-        protected internal bool confirmedValid;
-
         public bool VerifyValues()
         {
-            if (confirmedValid == false)
+
+            if (DefDatabase<GeneDef>.AllDefsListForReading.Contains(gene))
             {
-                confirmedValid = DefDatabase<GeneDef>.AllDefsListForReading.Contains(gene);
-                if (confirmedValid == false)
-                {
-                    Log.Warning("Unable to load gene with genedef " + gene.defName + " it was likely removed through cherrypicker or other means");
-                    return false;
-                }
+                return true;
             }
-            return true;
+            else
+            {
+                Log.Warning("Unable to load gene with genedef " + gene.defName + " it was likely removed through cherrypicker or other means");
+                return false;
+
+            }
+
 
         }
 
         public void AssignGenes(Pawn pawn, bool isXenogene)
         {
-            if (confirmedValid)
-            {
-                pawn.genes.AddGene(gene, isXenogene);
 
-                return;
-            }
+            pawn.genes.AddGene(gene, isXenogene);
+            return;
         }
     }
 
