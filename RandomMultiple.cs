@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BetterPrerequisites;
+using System.Collections.Generic;
 using Verse;
 using static HarmonyLib.Code;
 
@@ -7,27 +8,44 @@ namespace HALI_RandomGenetics
 
 
 
-    public class GeneAndWeight
+    public class GenesAndWeight
     {
-        public GeneDef gene;
+        public List<GeneDef> genes;
         public int weight = 1;
+        public int skip = 0;
 
-        public void AssignGene(Pawn pawn, bool isXenogene)
+        public int AssignGene(Pawn pawn, bool isXenogene)
         {
-            pawn.genes.AddGene(gene, isXenogene);
-            return;
+
+            for (int i = 0; i < genes.Count; i++)
+            {
+                pawn.genes.AddGene(genes[i], isXenogene);
+            }
+            return skip;
 
         }
 
         public bool VerifyValue()
         {
-            return DefDatabase<GeneDef>.AllDefsListForReading.Contains(gene);
+            if (genes == null)
+            {
+                return false;
+            }
+            for (int i = genes.Count - 1; i >= 0; i--)
+            {
+                if (DefDatabase<GeneDef>.AllDefsListForReading.Contains(genes[i]) == false)
+                {
+                    genes.RemoveAt(i);
+                }
+            }
+
+            return genes.Count != 0;
         }
     }
 
     public class GeneticList
     {
-        public List<GeneAndWeight> geneAndWeight;
+        public List<GenesAndWeight> genesAndWeight;
         public int filler = 0;
 
 
@@ -46,25 +64,30 @@ namespace HALI_RandomGenetics
                 return true;
             }
 
-            for (int i = geneAndWeight.Count - 1; i >= 0; i--)
+            if (genesAndWeight == null)
             {
-                totalPossibilities += geneAndWeight[i].weight;
+                return false;
+            }
 
-                if (geneAndWeight[i].VerifyValue() == false)
+            for (int i = genesAndWeight.Count - 1; i >= 0; i--)
+            {
+                totalPossibilities += genesAndWeight[i].weight;
+
+                if (genesAndWeight[i].VerifyValue() == false)
                 {
 
-                    geneAndWeight.RemoveAt(i);
+                    genesAndWeight.RemoveAt(i);
 
                 }
             }
             verifyCalculated = true;
             totalPossibilities += filler;
-            if (geneAndWeight.Count == 0)
+            if (genesAndWeight.Count == 0)
             {
                 return false;
             }
 
-            return true; ;
+            return true;
         }
 
         /// <summary>
@@ -72,23 +95,24 @@ namespace HALI_RandomGenetics
         /// </summary>
         /// <param name="pawn"></param>
         /// <param name="isXenogene"></param>
-        public void AssignGene(Pawn pawn, bool isXenogene)
+        public int AssignGene(Pawn pawn, bool isXenogene)
         {
 
             int Rvalue = Rand.Range(0, totalPossibilities);
             //Log.Message("Rvalue is " + Rvalue + "Total possibilities is " + genelist.TotalPossibilities);
             int totalweights = 0;
-            for (int j = 0; j < geneAndWeight.Count; j++)
+            for (int j = 0; j < genesAndWeight.Count; j++)
             {
-                totalweights += geneAndWeight[j].weight;
+                totalweights += genesAndWeight[j].weight;
 
                 if (Rvalue < totalweights)
                 {
 
-                    geneAndWeight[j].AssignGene(pawn, isXenogene);
-                    break;
+                    return genesAndWeight[j].AssignGene(pawn, isXenogene);
+                    
                 }
             }
+            return 0;
         }
     }
 
@@ -113,18 +137,14 @@ namespace HALI_RandomGenetics
             for (int i = geneList.Count - 1; i >= 0; i--)
             {
                 geneList[i].VerifyValues();
-                if (geneList[i].geneAndWeight.Count == 0)
+                if (geneList[i].genesAndWeight.Count == 0)
                 {
                     geneList.RemoveAt(i);
                 }
             }
             verifyCalculated = true;
-            if (geneList.Count == 0)
-            {
-                return false;
-            }
-
-            return true;
+            return geneList.Count != 0;
+            
         }
 
         public void AssignGene(Pawn pawn, bool isXenogene)
@@ -133,7 +153,7 @@ namespace HALI_RandomGenetics
             for (int i = 0; i < geneList.Count; i++)
             {
 
-                geneList[i].AssignGene(pawn, isXenogene);
+                i+=geneList[i].AssignGene(pawn, isXenogene);
 
             }
         }

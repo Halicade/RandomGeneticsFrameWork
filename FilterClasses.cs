@@ -37,8 +37,6 @@ namespace HALI_RandomGenetics
         protected internal bool valsCalculated = false;
 
 
-
-
         public bool VerifyValues()
         {
 
@@ -203,7 +201,6 @@ namespace HALI_RandomGenetics
                 if (ModsConfig.IsActive("redmattis.betterprerequisites"))
                 {
                     return (CheckBetterPrerequisites(g));
-
                 }
                 return false;
             }
@@ -211,6 +208,18 @@ namespace HALI_RandomGenetics
             //Now need to see if genes prerequisite matches one of filters
             if (needsPrerequisite.Contains(g.prerequisite.defName))
             {
+                if (ModsConfig.IsActive("redmattis.betterprerequisites"))
+                {
+                    if (CheckBetterPrerequisitesEmpty(g)==false)
+                    {
+                        return CheckBetterPrerequisites(g);
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+
                 return true;
             }
             else
@@ -229,7 +238,7 @@ namespace HALI_RandomGenetics
         /// Checks to see if GenePrerequisites has any prerequisites stored.
         /// </summary>
         /// <param name="g"></param>
-        /// <returns></returns>
+        /// <returns>returns true if empty</returns>
         private bool CheckBetterPrerequisitesEmpty(GeneDef g)
         {
 
@@ -331,11 +340,18 @@ namespace HALI_RandomGenetics
 
 
         public ColorType colorType;
+        public SimilarBy similarBy = 0;
 
         public enum ColorType
         {
             HairColor, Skincolor
         }
+
+        public enum SimilarBy
+        {
+            RGB, Hue, Sat, Val, SatVal
+        }
+
         protected internal int totalPossibilities = 0;
         protected internal List<GeneDef> matchingColors;
         protected internal bool filterCalculated = false;
@@ -358,6 +374,7 @@ namespace HALI_RandomGenetics
                     matchingColors = DefDatabase<GeneDef>.AllDefsListForReading
                     .Where(g =>
                     g?.exclusionTags?.Contains("HairColor") == true &&
+                    g?.hairColorOverride != null &&
                     SimilarColor(g.hairColorOverride.Value, colorToCheck, toleranceLevel)
 
                     && (excluded?.Any() == true ? (excluded.Contains(g.defName) == false) : true) == true
@@ -374,7 +391,6 @@ namespace HALI_RandomGenetics
                     break;
 
                 case ColorType.Skincolor:
-
 
                     matchingColors = DefDatabase<GeneDef>.AllDefsListForReading
                     .Where(g =>
@@ -400,8 +416,6 @@ namespace HALI_RandomGenetics
                     //break;
             }
 
-
-
             return filterCalculated;
 
         }
@@ -419,8 +433,6 @@ namespace HALI_RandomGenetics
                     "\ndefType = " + defType +
                     "\nexcluded = null";
 
-
-
             }
             else
             {
@@ -437,18 +449,60 @@ namespace HALI_RandomGenetics
 
         private bool SimilarColor(Color geneColor, Color filterColor, float toleranceLevel)
         {
-
-            return
+            float geneValue;
+            float filterValue;
+            
+            switch (similarBy)
+            {
+                case SimilarBy.RGB:
+                    return
                 Math.Abs(geneColor.r - filterColor.r) < toleranceLevel &&
                 Math.Abs(geneColor.g - filterColor.g) < toleranceLevel &&
                 Math.Abs(geneColor.b - filterColor.b) < toleranceLevel;
+                case SimilarBy.Hue:
+
+
+                    Color.RGBToHSV(geneColor, out geneValue, out _, out _);
+                    Color.RGBToHSV(filterColor, out filterValue, out _, out _);
+                    return Math.Abs(geneValue - filterValue) < toleranceLevel;
+
+                case SimilarBy.Sat:
+                    Color.RGBToHSV(geneColor, out _, out geneValue, out _);
+                    Color.RGBToHSV(filterColor, out _, out filterValue, out _);
+                    return Math.Abs(geneValue - filterValue) < toleranceLevel;
+
+
+                case SimilarBy.Val:
+                    Color.RGBToHSV(geneColor, out _, out _, out geneValue);
+                    Color.RGBToHSV(filterColor, out _, out _, out filterValue);
+                    return Math.Abs(geneValue - filterValue) < toleranceLevel;
+
+                case SimilarBy.SatVal:
+                    Color.RGBToHSV(geneColor, out _, out geneValue, out _);
+                    Color.RGBToHSV(filterColor, out _, out filterValue, out _);
+                    if (Math.Abs(geneValue - filterValue) < toleranceLevel)
+                    {
+                        Color.RGBToHSV(geneColor, out _, out _, out geneValue);
+                        Color.RGBToHSV(filterColor, out _, out _, out filterValue);
+                        return Math.Abs(geneValue - filterValue) < toleranceLevel;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                default:
+                    Log.Error("You entered the wrong tag for <similarBy> it should be RGB, Hue, Sat, or Val." + ToString());
+                    return false;
+            }
+            return false;
+
+
+
         }
 
 
         public void AssignGenes(Pawn pawn, bool isXenogene)
         {
-
-
 
             int Rvalue = Rand.Range(0, totalPossibilities);
             if (Rvalue < matchingColors.Count)
@@ -469,7 +523,6 @@ namespace HALI_RandomGenetics
     public class GeneList
     {
         public GeneDef gene;
-
 
         public bool VerifyValues()
         {

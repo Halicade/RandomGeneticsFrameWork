@@ -15,7 +15,6 @@ namespace HALI_RandomGenetics
         protected internal bool verifyCalculated = false;
         protected internal int filler=0;
         protected internal int totalPossibilities = 0;
-        protected internal int totalWeight = 0;
 
 
         public bool VerifyValues()
@@ -29,10 +28,12 @@ namespace HALI_RandomGenetics
             {
                 if (colorFilterList[i].VerifyValues() == false)
                 {
+                    totalPossibilities += colorFilterList[i].weight;
                     colorFilterList.RemoveAt(i);
                 }
             }
             verifyCalculated = true;
+            totalPossibilities += filler;
             if (colorFilterList.Count == 0)
             {
                 return false;
@@ -51,28 +52,22 @@ namespace HALI_RandomGenetics
         {
 
 
+
             int Rvalue = Rand.Range(0, totalPossibilities);
-
-            if (Rvalue >= totalWeight)
+            //Log.Message("Rvalue is " + Rvalue + "Total possibilities is " + genelist.TotalPossibilities);
+            int totalweights = 0;
+            for (int j = 0; j < colorFilterList.Count; j++)
             {
-                //filler value was reached
-                return;
-            }
-            else
-            {
+                totalweights += colorFilterList[j].weight;
 
-                int searchedweights = 0;
-                for (int i = 0; i < colorFilterList.Count; i++)
+                if (Rvalue < totalweights)
                 {
-                    searchedweights += colorFilterList[i].weight;
-                    if (Rvalue < searchedweights)
-                    {
-                        colorFilterList[i].AssignGenes(pawn, isXenogene);
-                        break;
-                    }
+
+                    colorFilterList[j].AssignGenes(pawn, isXenogene);
+                    return;
+
                 }
             }
-
             return;
         }
 
@@ -95,7 +90,6 @@ namespace HALI_RandomGenetics
             {
                 Log.Warning("Random Genetics found no genes for the gene " + this.def + " " + this.Label);
             }
-
 
             pawn.genes.RemoveGene(this);
             return;

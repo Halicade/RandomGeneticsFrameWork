@@ -18,9 +18,9 @@ namespace HALI_RandomGenetics
 
     public class RandomAny
     {
-        public List<FilterList> filterList = new List<FilterList>();
-        public List<ColorFilterList> colorFilterList = new List<ColorFilterList>();
-        public List<GeneList> geneList = new List<GeneList>();
+        public List<FilterList> filterList;
+        public List<ColorFilterList> colorFilterList;
+        public List<GeneList> geneList;
 
         public int weight = 1;
 
@@ -38,38 +38,46 @@ namespace HALI_RandomGenetics
             {
                 return true;
             }
-            
-            for (int i = geneList.Count - 1; i >= 0; i--)
+            if (geneList != null)
             {
-                if (geneList[i].VerifyValues() == false)
+                for (int i = geneList.Count - 1; i >= 0; i--)
                 {
-                    geneList.RemoveAt(i);
+                    if (geneList[i].VerifyValues() == false)
+                    {
+                        geneList.RemoveAt(i);
+                    }
                 }
             }
 
-            for (int i = filterList.Count - 1; i >= 0; i--)
+            if (filterList != null)
             {
-                if (filterList[i].VerifyValues() == false)
+                for (int i = filterList.Count - 1; i >= 0; i--)
                 {
-                    filterList.RemoveAt(i);
+                    if (filterList[i].VerifyValues() == false)
+                    {
+                        filterList.RemoveAt(i);
+                    }
                 }
             }
-            
-            for (int i = colorFilterList.Count - 1; i >= 0; i--)
+
+            if (colorFilterList != null)
             {
-                if (colorFilterList[i].VerifyValues() == false)
+                for (int i = colorFilterList.Count - 1; i >= 0; i--)
                 {
-                    colorFilterList.RemoveAt(i);
+                    if (colorFilterList[i].VerifyValues() == false)
+                    {
+                        colorFilterList.RemoveAt(i);
+                    }
                 }
             }
 
 
             verifyCalculated = true;
-            if (geneList.Empty())
+            if (geneList?.Any() != true)
             {
-                if (filterList.Empty())
+                if (filterList?.Any() != true)
                 {
-                    if (colorFilterList.Empty())
+                    if (colorFilterList?.Any() != true)
                     {
                         //The whole list is empty. Remove this.
                         return false;
@@ -86,24 +94,30 @@ namespace HALI_RandomGenetics
         public bool AssignGenes(Pawn pawn, bool isXenogene)
         {
 
-
-            for (int i = 0; i < geneList.Count; i++)
+            if (geneList != null)
             {
-                geneList[i].AssignGenes(pawn, isXenogene);
+                for (int i = 0; i < geneList.Count; i++)
+                {
+                    geneList[i].AssignGenes(pawn, isXenogene);
+                }
             }
 
 
-
-            for (int i = 0; i < filterList.Count; i++)
+            if (filterList != null)
             {
-                filterList[i].AssignGenes(pawn, isXenogene);
+                for (int i = 0; i < filterList.Count; i++)
+                {
+                    filterList[i].AssignGenes(pawn, isXenogene);
 
+                }
             }
 
-
-            for (int i = 0; i < colorFilterList.Count; i++)
+            if (colorFilterList != null)
             {
-                colorFilterList[i].AssignGenes(pawn, isXenogene);
+                for (int i = 0; i < colorFilterList.Count; i++)
+                {
+                    colorFilterList[i].AssignGenes(pawn, isXenogene);
+                }
             }
 
 
