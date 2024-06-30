@@ -30,7 +30,7 @@ namespace HALI_RandomGenetics
         public List<string> excluded;
         public String defType = "Verse.GeneDef";
         public int weight = 1;
-
+        public int timesToRepeat = 1;
 
         protected internal int cachedTotal = -1;
         protected internal List<GeneDef> possibleVals;
@@ -44,54 +44,60 @@ namespace HALI_RandomGenetics
             {
                 return possibleVals.Count != 0;
             }
-            else
+
+            if (canHaveAbility == false && needsAbility == true)
             {
-                if (canHaveAbility == false && needsAbility == true)
-                {
-                    Log.Error("Random Genetics Framework encountered an error. You have canHaveAbility = false and needsAbility = true" +
-                        "\nThis is not possible. This is found on filter: " + ToString());
-                    valsCalculated = true;
-                    return false;
-                }
-                if (canHavePrerequisite == false && needsPrerequisite != null)
-                {
-                    Log.Error("Random Genetics Framework encountered an error. You have canHavePrerequisite = false and needsPrerequisite is empty" +
-                        "\nThis is not possible. This is found on filter: " + ToString());
-                    valsCalculated = true;
-                    return false;
-                }
-
-
-                possibleVals = DefDatabase<GeneDef>.AllDefsListForReading
-                .Where(g =>
-
-                g?.biostatMet >= minMetabolism &&
-                g?.biostatMet <= maxMetabolism &&
-                g?.biostatCpx >= minComplexity &&
-                g?.biostatCpx <= maxComplexity &&
-                g?.biostatArc >= minArchite &&
-                g?.biostatArc <= maxArchite &&
-
-                //If the pawn has an ability
-                (g?.abilities?.Any() == true ? canHaveAbility : !needsAbility) &&
-
-                CheckPrerequisites(g) &&
-
-                g.GetType().ToString().Equals(defType) &&
-                CheckExclusionTags(g) &&
-
-                (excluded == null ? true : excluded?.Contains(g.defName) == false)
-                ).ToList();
-
+                Log.Error("Random Genetics Framework encountered an error. You have canHaveAbility = false and needsAbility = true" +
+                    "\nThis is not possible. This is found on filter: " + ToString());
                 valsCalculated = true;
-                if (possibleVals.Count == 0)
-                {
-
-                    Log.Warning("Random Genetics Framework encountered an error. There were no genes found for filter:" + ToString());
-                    return false;
-                }
-
+                return false;
             }
+            if (canHavePrerequisite == false && needsPrerequisite != null)
+            {
+                Log.Error("Random Genetics Framework encountered an error. You have canHavePrerequisite = false and needsPrerequisite is empty" +
+                    "\nThis is not possible. This is found on filter: " + ToString());
+                valsCalculated = true;
+                return false;
+            }
+
+
+            possibleVals = DefDatabase<GeneDef>.AllDefsListForReading
+            .Where(g =>
+
+            g?.biostatMet >= minMetabolism &&
+            g?.biostatMet <= maxMetabolism &&
+            g?.biostatCpx >= minComplexity &&
+            g?.biostatCpx <= maxComplexity &&
+            g?.biostatArc >= minArchite &&
+            g?.biostatArc <= maxArchite &&
+
+            //If the pawn has an ability
+            (g?.abilities?.Any() == true ? canHaveAbility : !needsAbility) &&
+
+            CheckPrerequisites(g) &&
+
+            g.GetType().ToString().Equals(defType) &&
+            CheckExclusionTags(g) &&
+
+            (excluded == null ? true : excluded?.Contains(g.defName) == false)
+            ).ToList();
+
+            valsCalculated = true;
+            if (possibleVals.Count == 0)
+            {
+
+                Log.Warning("Random Genetics Framework encountered an error. There were no genes found for filter:" + ToString());
+                exclusionTags = null;
+                needsPrerequisite = null;
+                excluded = null;
+
+                return false;
+            }
+            exclusionTags = null;
+            needsPrerequisite = null;
+            excluded = null;
+
+
             return true;
         }
 
@@ -210,7 +216,7 @@ namespace HALI_RandomGenetics
             {
                 if (ModsConfig.IsActive("redmattis.betterprerequisites"))
                 {
-                    if (CheckBetterPrerequisitesEmpty(g)==false)
+                    if (CheckBetterPrerequisitesEmpty(g) == false)
                     {
                         return CheckBetterPrerequisites(g);
                     }
@@ -311,18 +317,17 @@ namespace HALI_RandomGenetics
 
         public void AssignGenes(Pawn pawn, bool isXenogene)
         {
-            int Rvalue = Rand.Range(0, possibleVals.Count() + filler);
-            if (Rvalue < possibleVals.Count)
+            for (int i = 0; i < timesToRepeat; i++)
             {
-                pawn.genes.AddGene(possibleVals[Rvalue], isXenogene);
+                int Rvalue = Rand.Range(0, possibleVals.Count() + filler);
+                if (Rvalue < possibleVals.Count)
+                {
+                    pawn.genes.AddGene(possibleVals[Rvalue], isXenogene);
 
-                return;
+                }
+
             }
-            else
-            {
-                //this reached a filler
-                return;
-            }
+            return;
         }
     }
 
@@ -336,7 +341,7 @@ namespace HALI_RandomGenetics
         public int filler = 0;
         public int weight = 1;
         public String defType = "Verse.GeneDef";
-
+        public int timesToRepeat = 1;
 
 
         public ColorType colorType;
@@ -344,7 +349,7 @@ namespace HALI_RandomGenetics
 
         public enum ColorType
         {
-            HairColor, Skincolor
+            HairColor, SkinColor
         }
 
         public enum SimilarBy
@@ -390,7 +395,7 @@ namespace HALI_RandomGenetics
                     filterCalculated = true;
                     break;
 
-                case ColorType.Skincolor:
+                case ColorType.SkinColor:
 
                     matchingColors = DefDatabase<GeneDef>.AllDefsListForReading
                     .Where(g =>
@@ -427,6 +432,7 @@ namespace HALI_RandomGenetics
                 return
                     "\ncolorType = " + colorType.ToString() +
                     "\ncolorToCheck = " + colorToCheck.ToString() +
+                    "\nsimilarBy = " + similarBy.ToString() +
                     "\ntoleranceLevel = " + toleranceLevel +
                     "\nfiller = " + filler +
                     "\nweight = " + weight +
@@ -437,7 +443,9 @@ namespace HALI_RandomGenetics
             else
             {
                 return
+                    "\ncolorType = " + colorType.ToString() +
                     "\ncolorToCheck = " + colorToCheck.ToString() +
+                    "\nsimilarBy = " + similarBy.ToString() +
                     "\ntoleranceLevel = " + toleranceLevel +
                     "\nfiller = " + filler +
                     "\nweight = " + weight +
@@ -451,7 +459,7 @@ namespace HALI_RandomGenetics
         {
             float geneValue;
             float filterValue;
-            
+
             switch (similarBy)
             {
                 case SimilarBy.RGB:
@@ -503,19 +511,18 @@ namespace HALI_RandomGenetics
 
         public void AssignGenes(Pawn pawn, bool isXenogene)
         {
-
-            int Rvalue = Rand.Range(0, totalPossibilities);
-            if (Rvalue < matchingColors.Count)
+            for (int i = 0; i < timesToRepeat; i++)
             {
-                pawn.genes.AddGene(matchingColors[Rvalue], isXenogene);
+                int Rvalue = Rand.Range(0, totalPossibilities);
+                if (Rvalue < matchingColors.Count)
+                {
+                    pawn.genes.AddGene(matchingColors[Rvalue], isXenogene);
 
-                return;
+
+                }
+
             }
-            else
-            {
-                //this reached a filler
-                return;
-            }
+            return;
         }
     }
 

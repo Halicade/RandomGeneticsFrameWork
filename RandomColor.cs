@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
+using static HarmonyLib.Code;
 
 namespace HALI_RandomGenetics
 {
@@ -81,6 +82,11 @@ namespace HALI_RandomGenetics
         {
             base.PostAdd();
             Gene_Similar_Color filtered = def.GetModExtension<Gene_Similar_Color>();
+            if (filtered == null)
+            {
+                Log.Error("Unable to find modExtensions \"HALI_RandomGenetics.Gene_Similar_Color\" for " + this.def + " " + this.Label);
+                return;
+            }
 
             if (filtered.VerifyValues())
             {

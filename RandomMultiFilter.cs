@@ -20,7 +20,7 @@ namespace HALI_RandomGenetics
     {
         public List<FilterList> filterList;
         public List<ColorFilterList> colorFilterList;
-        public List<GeneList> geneList;
+        public List<GeneDef> genes;
 
         public int weight = 1;
 
@@ -38,13 +38,13 @@ namespace HALI_RandomGenetics
             {
                 return true;
             }
-            if (geneList != null)
+            if (genes != null)
             {
-                for (int i = geneList.Count - 1; i >= 0; i--)
+                for (int i = genes.Count - 1; i >= 0; i--)
                 {
-                    if (geneList[i].VerifyValues() == false)
+                    if (DefDatabase<GeneDef>.AllDefsListForReading.Contains(genes[i]) == false)
                     {
-                        geneList.RemoveAt(i);
+                        genes.RemoveAt(i);
                     }
                 }
             }
@@ -73,7 +73,7 @@ namespace HALI_RandomGenetics
 
 
             verifyCalculated = true;
-            if (geneList?.Any() != true)
+            if (genes?.Any() != true)
             {
                 if (filterList?.Any() != true)
                 {
@@ -94,11 +94,11 @@ namespace HALI_RandomGenetics
         public bool AssignGenes(Pawn pawn, bool isXenogene)
         {
 
-            if (geneList != null)
+            if (genes != null)
             {
-                for (int i = 0; i < geneList.Count; i++)
+                for (int i = 0; i < genes.Count; i++)
                 {
-                    geneList[i].AssignGenes(pawn, isXenogene);
+                    pawn.genes.AddGene(genes[i], isXenogene);
                 }
             }
 
@@ -222,6 +222,11 @@ namespace HALI_RandomGenetics
             base.PostAdd();
 
             Any_List_Random multiFilter = def.GetModExtension<Any_List_Random>();
+            if (multiFilter == null)
+            {
+                Log.Error("Unable to find modExtensions \"HALI_RandomGenetics.Any_List_Random\" for " + this.def + " " + this.Label);
+                return;
+            }
 
             if (multiFilter.VerifyValues())
             {

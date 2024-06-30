@@ -41,6 +41,7 @@ namespace HALI_RandomGenetics
             verifyCalculated = true;
             if (filterList.Count == 0)
             {
+
                 return false;
             }
 
@@ -79,16 +80,18 @@ namespace HALI_RandomGenetics
     }
 
 
-
     public class Random_Filter_List : Gene
     {
-        private bool ListVerified = false;
 
         public override void PostAdd()
         {
             base.PostAdd();
             Gene_Filtered filtered = def.GetModExtension<Gene_Filtered>();
-
+            if (filtered == null)
+            {
+                Log.Error("Unable to find modExtensions \"HALI_RandomGenetics.Gene_Filtered\" for " + this.def + " " + this.Label);
+                return;
+            }
 
             if (filtered.VerifyValues())
             {

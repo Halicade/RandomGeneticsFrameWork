@@ -11,35 +11,88 @@ namespace HALI_RandomGenetics
     public class GenesAndWeight
     {
         public List<GeneDef> genes;
+        public List<FilterList> filterList;
+        public List<ColorFilterList> colorFilterList;
         public int weight = 1;
         public int skip = 0;
 
         public int AssignGene(Pawn pawn, bool isXenogene)
         {
-
-            for (int i = 0; i < genes.Count; i++)
+            if (genes != null)
             {
-                pawn.genes.AddGene(genes[i], isXenogene);
+                for (int i = 0; i < genes.Count; i++)
+                {
+                    pawn.genes.AddGene(genes[i], isXenogene);
+                }
             }
-            return skip;
 
+            if (filterList != null)
+            {
+                for (int i = 0; i < filterList.Count; i++)
+                {
+                    filterList[i].AssignGenes(pawn, isXenogene);
+                }
+            }
+
+            if (colorFilterList != null)
+            {
+                for (int i = 0; i < colorFilterList.Count; i++)
+                {
+                    colorFilterList[i].AssignGenes(pawn, isXenogene);
+                }
+            }
+
+            return skip;
         }
 
         public bool VerifyValue()
         {
-            if (genes == null)
+            if (genes != null)
             {
-                return false;
-            }
-            for (int i = genes.Count - 1; i >= 0; i--)
-            {
-                if (DefDatabase<GeneDef>.AllDefsListForReading.Contains(genes[i]) == false)
+                for (int i = genes.Count - 1; i >= 0; i--)
                 {
-                    genes.RemoveAt(i);
+                    if (DefDatabase<GeneDef>.AllDefsListForReading.Contains(genes[i]) == false)
+                    {
+                        genes.RemoveAt(i);
+                    }
                 }
             }
 
-            return genes.Count != 0;
+            if (filterList != null)
+            {
+                for (int i = filterList.Count - 1; i >= 0; i--)
+                {
+                    if (filterList[i].VerifyValues() == false)
+                    {
+                        filterList.RemoveAt(i);
+                    }
+                }
+            }
+
+            if (colorFilterList != null)
+            {
+                for (int i = colorFilterList.Count - 1; i >= 0; i--)
+                {
+                    if (colorFilterList[i].VerifyValues() == false)
+                    {
+                        colorFilterList.RemoveAt(i);
+                    }
+                }
+            }
+
+            if (genes?.Any() != true)
+            {
+                if (filterList?.Any() != true)
+                {
+                    if (colorFilterList?.Any() != true)
+                    {
+                        //The whole list is empty. Remove this.
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 
@@ -109,7 +162,7 @@ namespace HALI_RandomGenetics
                 {
 
                     return genesAndWeight[j].AssignGene(pawn, isXenogene);
-                    
+
                 }
             }
             return 0;
@@ -144,7 +197,7 @@ namespace HALI_RandomGenetics
             }
             verifyCalculated = true;
             return geneList.Count != 0;
-            
+
         }
 
         public void AssignGene(Pawn pawn, bool isXenogene)
@@ -153,7 +206,7 @@ namespace HALI_RandomGenetics
             for (int i = 0; i < geneList.Count; i++)
             {
 
-                i+=geneList[i].AssignGene(pawn, isXenogene);
+                i += geneList[i].AssignGene(pawn, isXenogene);
 
             }
         }
@@ -169,6 +222,11 @@ namespace HALI_RandomGenetics
             //Log.Message("Filler is " + multi.geneList[0].filler+ multi.geneList[0].geneAndWeight[0].weight);
             //multi.AssignGene(pawn, pawn.genes.IsXenogene(this));
 
+            if (multi == null)
+            {
+                Log.Error("Unable to find modExtensions \"HALI_RandomGenetics.Multi_Rand_List\" for " + this.def + " " + this.Label);
+                return;
+            }
 
             if (multi.VerifyValues())
             {
@@ -179,15 +237,6 @@ namespace HALI_RandomGenetics
             {
                 Log.Warning("Random Genetics found no genes for the gene " + this.def + " " + this.Label);
             }
-
-
-            /*
-            for (int i = 0; i < multi.geneList.Count; i++)
-            {
-                
-                multi.geneList[i].AssignGene(pawn, pawn.genes.IsXenogene(this));
-            }
-            */
 
             pawn.genes.RemoveGene(this);
             return;
