@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	
+	<!--
+	Unlike the other pages, this page should not be copied into the regular Defs folder
+	-->
+	
+	
+	<changes>
+		<!--
+		EBSG has a patch that will add EBSG_ContractedStomach (metabolism +2) to any xeno that has strongStomach gene.
+		It also changes metabolism of the strongStomach gene to -3.
+		Because it would not affect the genes inside modextensions, you will need to do something like below if being entered manually.
+		-->
+		<li>
+			<genes>
+				<li>StrongStomach</li>
+				<li MayRequireAnyOf="ebsg.aio,ebsg.food">EBSG_ContractedStomach</li>
+			</genes>
+		</li>
+	
+	</changes>
+	
+	
+	<exclusions>
+		<!--
+		You may want to exclude the below genes if you are using Gene_Filtered. Reasons listed below.
+		Of course verify first whether you want to add them below or not.
+		These are just genes I've noticed that may cause issue
+		-->
+		
+		<General>
+			<!--use a large amount of exclusionTags-->
+			<li MayRequire="emitbreaker.mim.wh40k.ch.cd">EMCD_Violence_LordofChange</li>
+			<li MayRequire="emitbreaker.mim.wh40k.ch.cd">EMCD_Violence_Horror</li>
+			<li MayRequire="emitbreaker.mim.wh40k.ch.cd">EMCD_Violence_Changecaster</li>
+			<li MayRequire="emitbreaker.mim.wh40k.ch.cd">EMCD_Violence_Changeling</li>
+			<li MayRequire="emitbreaker.mim.wh40k.ch.cd">EMCD_Violence_Flamer</li>
+			
+			<li MayRequire="emitbreaker.mim.wh40k.nc.core">EMNC_Biotransference</li>
+			
+			<li MayRequire="emitbreaker.mim.wh40k.gc.core">EMGC_Gene_PurestrainGenestealer</li>
+			<li MayRequire="emitbreaker.mim.wh40k.gc.core">EMGC_Gene_Patriarch</li>
+		
+		</General>
+		
+		
+		<Tail>
+			<!--This tail can automatically kill male pawns-->
+			<li MayRequire="fs.reviaracebiotech">ReviaTail</li>
+		
+		</Tail>
+		
+		<Hair>
+			<!--Will give the pawn using it the void touched hediff-->
+			<li MayRequire="resplice.xotr.core">RS_VoidTouched</li>
+		
+		</Hair>
+		
+		<SkinColorOverride>
+			<!--give pawn extra beauty and temperature resistance-->
+			<li MayRequire="lusty.helltakergenes">LMSkinDemon</li>
+		
+		</SkinColorOverride>
+	</exclusions>
+	
+	<MayRequire>
+		<!--
+		Depending on where you put MayRequire, different things might happen
+		-->
+		
+		<li Class="HALI_RandomGenetics.Multi_Rand_List">
+			<geneList>
+				<li>
+					<genesAndWeight>
+						<li>
+							
+							<genes>
+								<li>MySuperAwesomeGene</li>
+								<li>Skin_Blue</li>
+							</genes>
+							<weight>2</weight>
+						</li>
+						<li>
+							<genes>
+								<li>Skin_Green</li>
+							</genes>
+						</li>
+					</genesAndWeight>
+				</li>
+				<li>
+					<genesAndWeight>
+						<li>
+							<genes>
+								<li>Skin_DeepRed</li>
+							</genes>
+						</li>
+					</genesAndWeight>
+				</li>
+			</geneList>
+		</li>
+		
+		<!--
+		In the above example, you can put mayRequire in any of the <li> tags.
+		If you put it inside <genes>like below
+		-->
+		<genes>
+			<li MayRequire="hashtag.awesomegene">MySuperAwesomeGene</li>
+			<li>Skin_Blue</li>
+		</genes>
+		<!--
+		It will ignore only this gene and still add Skin_Blue if selected
+		-->
+		
+		<!--
+		Putting MayRequire at the <li> below <genesAndWeight> will remove those genes entirely.
+		The only option would be Skin_Green in this case
+		-->
+		
+		<!--
+		Putting MayRequire at the <li> below <geneList> will remove that entire portion.
+		It will simply start with the next <geneList> giving Skin_DeepRed
+		-->
+	</MayRequire>
+	
+	<CherryPicker>
+		<!--
+		If a gene is removed with Cherry Picker or through similar mods, the framework will respect that choice
+		In most cases, this will replace the gene with filler.
+		In the below case, if Skin_InkBlack were removed with Cherry Picker,
+		you would have a 1 in 11 chance of Skin_Blue
+		
+		If both Skin_InkBlack and Skin_Blue were removed, nothing would happen
+		-->
+		
+		<li Class="HALI_RandomGenetics.Gene_Multi">
+			<geneList>
+				<li>
+					<genesAndWeight>
+						<li>
+							<genes>
+								<li>Skin_InkBlack</li>
+							</genes>
+							<weight>8</weight>
+						</li>
+						<li>
+							<genes>
+								<li>Skin_Blue</li>
+							</genes>
+						</li>
+					</genesAndWeight>
+					<filler>2</filler>
+				</li>
+			</geneList>
+		</li>
+	
+	
+	</CherryPicker>
+	
+	
+	<!--
+	with filters, ExclusionTags for aptitudes (skills) and chemicals are in the same style as below
+	Aptitude_defName or Addiction_defName
+	These make it so the filter will choose a random aptitude in the given skill (Great mining, Awful Mining, etc.)
+	It can not be used for selecting a random skill to get that aptitude. You can just use a list or random single for that
+	(yes technically you can use exclusionTags for each skill. You do you)
+	-->
+	<exclusionTags>
+		<li>Aptitude_Mining</li>
+	</exclusionTags>
+	
+	<exclusionTags>
+		<li>Addiction_Psychite</li>
+	</exclusionTags>
+	
+	
+	<!--
+	For genes like the ones used in Vanilla Races Expanded - Android, and Vanilla Races Expanded - Insector
+	you will need to change the filter tage <defType> by default this is Verse.GeneDef
+	In its place, you put the new GeneDef class in there
+	-->
+	<defType>
+		<li>VREAndroids.AndroidGeneDef</li>
+	</defType>
+	
+	<defType>
+		<li>VanillaRacesExpandedInsector.GenelineGeneDef</li>
+	</defType>
+	
+	
+	<!--
+	You can also put random genes inside random genes.
+	I don't recommend doing this too much.
+	Be sure that you don't put yourself into a loop while doing so.
+	In this example they would have a
+	1/2 chance of getting TEST_HALI_RandomTail (along with whatever logic is in that gene)
+	1/2 chance of getting Headbone_MiniHorns
+	-->
+	<GeneDef ParentName="HALI_RandomMultiBase">
+		<defName>TEST_HALI_NestedRandom</defName>
+		<label>random nested gene</label>
+		<description>Carriers will get a random tail or minihorns.</description>
+		<iconPath>UI/Icons/Genes/Gene_HairColor</iconPath>
+		<displayOrderInCategory>10</displayOrderInCategory>
+		<modExtensions>
+			<li Class="HALI_RandomGenetics.Multi_Rand_List">
+				<geneList>
+					<li>
+						<genesAndWeight>
+							<li>
+								<genes>
+									<li>TEST_HALI_RandomTail</li>
+								</genes>
+							</li>
+							<li>
+								<genes>
+									<li>Headbone_MiniHorns</li>
+								</genes>
+							</li>
+						</genesAndWeight>
+					</li>
+				</geneList>
+			</li>
+		</modExtensions>
+	</GeneDef>
+
+
+</Defs>

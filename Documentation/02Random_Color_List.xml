@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<!--
+	Random_Color_List allows a random colored gene similar to the color you select.
+	This can be used for either skin color or hair color.
+	Eye color is not possible because eye color is chosen using a different method.
+	Blood color is not possible either for the same reason.
+	
+	The following tags can be used inside <colorFilterList>
+	
+	<colorType> Either hairColor or skinColor
+	-Only one of these can be used in a single filter.
+	<colorToCheck> a color value using the same format as the hair and skin genes currently
+	<toleranceLevel> A decimal value to tell how similar to <colorToCheck> you want the new color to be.
+	<similarBy> choose the method for how similar colors are being determined.
+	-Current options for similarBy are RGB, Hue, Sat, Val, SatVal
+		-RGB is default
+		-To see how similar colors function, you can create examples through PaintDotNet or GIMP
+	<weight>
+	<weight> and <filler> can be applied as well if desired
+	
+	Additionally, <filler> can be applied outside <colorFilterList>
+	
+	The formula for these can be found in the source code. in FilterClasses.cs function SimilarColor
+	-->
+	
+	<!--
+	In the below example, a random skin color that is similar to Skin_PaleYellow will be generated on the pawn
+	-->
+	<GeneDef ParentName="HALI_RandomColorBase">
+		<defName>TEST_HALI_RandomSimilarSkinYellow</defName>
+		<label>similar color skin</label>
+		<description>Carriers will get a random hair color close to yellow</description>
+		<iconPath>UI/Icons/Genes/RG_RandomIcon</iconPath>
+		<displayOrderInCategory>10</displayOrderInCategory>
+		<modExtensions>
+			<li Class="HALI_RandomGenetics.Gene_Similar_Color">
+				<colorFilterList>
+					<li>
+						<colorType>SkinColor</colorType>
+						<colorToCheck>(193, 165, 99)</colorToCheck>
+						<toleranceLevel>0.40</toleranceLevel>
+					</li>
+				</colorFilterList>
+			</li>
+		</modExtensions>
+	</GeneDef>
+	
+	<!--
+	In the below example, you will get either:
+	3/5 chance for a random skin color that is similar to Skin_PaleYellow will be generated on the pawn
+	2/5 chance for a random hair color that is similar to Hair_SandyBlonde will be generated on the pawn
+	
+	-->
+	<GeneDef ParentName="HALI_RandomColorBase">
+		<defName>TEST_HALI_RandomSimilarSkinYellowBlonde</defName>
+		<label>similar color skin</label>
+		<description>Carriers will get a random hair color close to yellow or blonde</description>
+		<iconPath>UI/Icons/Genes/RG_RandomIcon</iconPath>
+		<displayOrderInCategory>10</displayOrderInCategory>
+		<modExtensions>
+			<li Class="HALI_RandomGenetics.Gene_Similar_Color">
+				<colorFilterList>
+					<li>
+						<colorType>SkinColor</colorType>
+						<colorToCheck>(193, 165, 99)</colorToCheck>
+						<toleranceLevel>0.40</toleranceLevel>
+						<weight>3</weight>
+					</li>
+					<li>
+						<colorType>HairColor</colorType>
+						<colorToCheck>(193, 146, 85)</colorToCheck>
+						<toleranceLevel>0.40</toleranceLevel>
+						<weight>2</weight>
+					</li>
+				</colorFilterList>
+			</li>
+		</modExtensions>
+	</GeneDef>
+	
+	
+	<!--
+	This example is using SatVal
+	-->
+	<GeneDef ParentName="HALI_RandomColorBase">
+		<defName>TEST_HALI_RandomPastelHair</defName>
+		<label>similar color skin</label>
+		<description>Carriers will get a random pastel hair color</description>
+		<iconPath>UI/Icons/Genes/RG_RandomIcon</iconPath>
+		<displayOrderInCategory>10</displayOrderInCategory>
+		<modExtensions>
+			<li Class="HALI_RandomGenetics.Gene_Similar_Color">
+				<colorFilterList>
+					<li>
+						<colorType>HairColor</colorType>
+						<colorToCheck>(105,142,91)</colorToCheck>
+						<toleranceLevel>0.20</toleranceLevel>
+						<similarBy>SatVal</similarBy>
+					</li>
+				</colorFilterList>
+			</li>
+		</modExtensions>
+	</GeneDef>
+
+
+</Defs>

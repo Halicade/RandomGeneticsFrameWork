@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	
+	<Description>
+		<li>Random Genetics Framework is designed to generate random colonists based off your own conditions</li>
+		<li>Built with compatibility and ease of use in mind, this documentation should address all questions.</li>
+		<li>After the gene is added to a pawn, it will assign all the genes it was told to and then remove itself.</li>
+	
+	
+	</Description>
+	
+	<ReasonsToUse>
+		<li>You have over 5000 genes in your modlist and want more variety</li>
+		<li>You want a Xenotype to be more diverse in genetics being chosen</li>
+		<li>You can't make up which gene you want to add to a Xenotype and want to add both</li>
+		<li>You want to add a gene to a xenotype but only when another mod is available, and you want to add another gene with it to balance it out</li>
+		<li>You like diversity and are tired of your Xenoptypes all having the same shade of green hair when there are over 400 different hairdefs</li>
+		<li>You don't want to create an entirely new Xenotype to give a pawn a super special ultra instincts gene.</li>
+	</ReasonsToUse>
+	
+	<ThingsYouCanDo>
+		<li>Generate a random gene based on various conditions like metabolism, exclusionTag, or if it has an ability or prerequisite.</li>
+		<li>Generate random hair or skin colors that are all similar by RBG, Hue, Saturation, or Value.</li>
+		<li>Have a set of genes that will only be used if a certain mod is active
+			<li>You can tell it to add base biotech genes and outside genes at the same time</li>
+		</li>
+		<li>Adjust weights and fillers so certain selections are more common than others.</li>
+	
+	</ThingsYouCanDo>
+	
+	<UsingThisDocumentation>
+		<li>The files 01-04 can be copy and pasted into the Defs folder to see how they work for demonstration purposes</li>
+		<li>This file and 05Notes.xml can not be copied into Defs. Rimworld will yell at you.</li>
+	</UsingThisDocumentation>
+	
+	<compatibility>
+		<li>I haven't tested all 7000 genes, but everything I've tested so far has worked.</li>
+		<li>This has compatibility with RedMattis' Big and Small - Framework. With their permission, I used their code for betterprerequisites to ensure compatibility</li>
+	</compatibility>
+	
+	
+	<credits>
+		<modName>
+			<li>Goji's Fantasy Race: Merren</li>
+			<li>Det's Xenotypes - Avaloi</li>
+			
+			<note>These mods were my main influence in creating this. A single function was all I needed from each of these and here we are. Thank you!</note>
+		</modName>
+		
+		
+		<author>
+			<li>RedMattis</li>
+			<note>Allowed me to use the code for their Big and Small - Framework mod</note>
+		</author>
+	
+	</credits>
+
+</Defs>

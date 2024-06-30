@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<!--
+	Random_Any_List allows you to use any of the three list types.
+	A random set from those lists will be chosen.
+	Genes are added in the order
+	<geneList>
+	<filterList>
+	<colorFilterList>
+	
+	<geneList> is simply the GeneDef surrounded by <gene>
+	
+	The same logic used for <filterList> and <colorFilterList> applies to this one as well.
+	Note that their <weight> tags are irrelevant in these examples. As all genes in that set will be assigned
+	<filler> can still be used.
+	
+	
+	-->
+	
+	<!--
+	In the below example, the pawn will either get
+	Hemogenic and a random ability, or
+	Skin_InkBlack, and Tail_Furry
+	-->
+	
+	<GeneDef ParentName="HALI_RandomAnyBase">
+		<defName>TEST_HALI_RandomHemogenicAbility</defName>
+		<label>random hemogenic ability</label>
+		<description>Carriers will get the Hemogenic gene as well as a random Hemogenic Ability</description>
+		<displayOrderInCategory>10</displayOrderInCategory>
+		<modExtensions>
+			<li Class="HALI_RandomGenetics.Any_List_Random">
+				<randomAny>
+					<li>
+						<!--Possibility 1-->
+						<genes>
+							<li>Hemogenic</li>
+						</genes>
+						<filterList>
+							<li>
+								<canHaveAbility>true</canHaveAbility>
+								<needsAbility>true</needsAbility>
+								<canHavePrerequisite>true</canHavePrerequisite>
+								<needsPrerequisite>
+									<li>Hemogenic</li>
+								</needsPrerequisite>
+							
+							</li>
+						</filterList>
+					</li>
+					<li>
+						<!--Possibility 2-->
+						<genes>
+							<li>Skin_InkBlack</li>
+							<li>Tail_Furry</li>
+						</genes>
+					
+					</li>
+				</randomAny>
+			</li>
+		</modExtensions>
+	</GeneDef>
+
+</Defs>

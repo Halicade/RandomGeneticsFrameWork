@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<GeneCategoryDef>
+		<defName>HALI_RandomGeneticsCat</defName>
+		<label>random genetics</label>
+		<displayPriorityInXenotype>210</displayPriorityInXenotype>
+	</GeneCategoryDef>
+	
+	<!--
+	you don't need to use these templates of course.
+	I just figure it's better to have them all in one place though as opposed to all over the place.
+
+	Change metabolism and complexity in your GeneDef, or it may yell at you if the genes are over/under 6 metabolism.
+	And change the iconPath in your genes. Unless you want my ugly icon.
+	<biostatMet>0</biostatMet>
+	<biostatCpx>0</biostatCpx>
+	-->
+	
+	
+	<!--Random genes selected from multiple lists-->
+	<!--Requires	<li Class="HALI_RandomGenetics.Multi_Rand_List">	-->
+	<GeneDef Name="HALI_RandomMultiBase" Abstract="True">
+		<displayCategory>HALI_RandomGeneticsCat</displayCategory>
+		<geneClass>HALI_RandomGenetics.Multiple_Random_Lists</geneClass>
+		<biostatMet>0</biostatMet>
+		<iconPath>UI/Icons/Genes/RG_RandomIcon</iconPath>
+	</GeneDef>
+	
+	<!--Gene from a random filter in a list-->
+	<!--Requires	<li Class="HALI_RandomGenetics.Gene_Filtered">	-->
+	<GeneDef Name="HALI_RandomFilteredBase" Abstract="True">
+		<displayCategory>HALI_RandomGeneticsCat</displayCategory>
+		<geneClass>HALI_RandomGenetics.Random_Filter_List</geneClass>
+		<biostatMet>0</biostatMet>
+		<iconPath>UI/Icons/Genes/RG_RandomIcon</iconPath>
+	</GeneDef>
+	
+	<!--Random similar color from list-->
+	<!--Requires	<li Class="HALI_RandomGenetics.Gene_Similar_Color">	-->
+	<GeneDef Name="HALI_RandomColorBase" Abstract="True">
+		<displayCategory>HALI_RandomGeneticsCat</displayCategory>
+		<geneClass>HALI_RandomGenetics.Random_Color_List</geneClass>
+		<biostatMet>0</biostatMet>
+		<iconPath>UI/Icons/Genes/RG_RandomIcon</iconPath>
+	</GeneDef>
+	
+	<!--Random list,filter, or color from list-->
+	<!--Requires	<li Class="HALI_RandomGenetics.Any_List_Random">	-->
+	<GeneDef Name="HALI_RandomAnyBase" Abstract="True">
+		<displayCategory>HALI_RandomGeneticsCat</displayCategory>
+		<geneClass>HALI_RandomGenetics.Random_Any_List</geneClass>
+		<biostatMet>0</biostatMet>
+		<iconPath>UI/Icons/Genes/RG_RandomIcon</iconPath>
+	</GeneDef>
+	
+</Defs>

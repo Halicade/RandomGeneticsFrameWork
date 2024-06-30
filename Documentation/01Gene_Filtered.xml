@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	
+	<!--
+	Using Gene_Filtered, you can use filters to select genes that will be chosen.
+	Note all filter options are optional.
+	
+	There is a list of genes you may want to exclude in 05Notes.xml
+	
+	Possible filters include:
+	<exclusionTags> if a gene has these exclusionTags, it will be counted
+	<excluded> if a Genedef is named one of these it will be excluded
+	<minMetabolism> defaults to -999
+	<maxMetabolism> defaults to 999
+	<minComplexity> defaults to -999
+	<maxComplexity> defaults to 999
+	<minArchite> defaults to 0
+	<maxArchite> defaults to 0
+	<canHaveAbility> defaults to true.
+	-If the filter has <canHaveAbility> it will include regular genes and genes that have abilities based on the <ability> tag.
+	<onlyHasAbility> defaults to false.
+	-If the filter has <onlyHasAbility> it will only include genes if they have an <ability> tag.
+	-If you have <canHaveAbility> false and <onlyHasAbility> true, it will not run the filter.
+	<canHavePrerequisite> defaults to false.
+	-If the filter has <canHavePrerequisite> that means the gene can have a prerequisite listed.
+	-Note that this will not check if the pawn in question has that prerequisite. It can add a gene regardless of the prerequisite status
+	<needsPrerequisite> blank by default
+	-If the filter has <needsPrerequisite> the genes listed inside will need to match the GeneDefs prerequisite
+	<timesToRepeat> defaults to 1
+	-If the filter has <timesToRepeat> at a value larger than 1, it will try to insert another gene that matches the criteria that many times
+	-This gene assignment follows the same logic as vanilla,
+		-if the same gene is added as a germline gene, it will not be added
+		-if the same gene is added as a xenogene, there will be a duplicate
+	<defType> defaults to "Verse.GeneDef"
+	-<defType> is used for subclasses of genes. These are for genes not tagged as <GeneDef>.
+	-The only ones I know of that do this so far are:
+	-Vanilla Races Expanded - Android "VREAndroids.AndroidGeneDef"
+	-Vanilla Races Expanded - Insector "VanillaRacesExpandedInsector.GenelineGeneDef"
+	-->
+	
+	
+	<!--
+	In this example, it will search for any genes that use the exclusionTags HairStyle or Immunity
+	This will exclude PerfectImmunity because we did not change maxArchite
+	You will have an equal chance of getting any gene in this example.
+	Base game you would get:
+	Hair_BaldOnly
+	Hair_ShortOnly
+	Hair_LongOnly
+	Immunity_Weak
+	Immunity_Strong
+	Immunity_SuperStrong
+	-->
+	<GeneDef ParentName="HALI_RandomFilteredBase">
+		<defName>TEST_HALI_RandomByFilters</defName>
+		<label>Random gene by filters</label>
+		<description>Generates a random gene based off of exclusionTags.</description>
+		<displayOrderInCategory>10</displayOrderInCategory>
+		<modExtensions>
+			<li Class="HALI_RandomGenetics.Gene_Filtered">
+				<filterList>
+					<li>
+						<exclusionTags>
+							<li>HairStyle</li>
+							<li>Immunity</li>
+						</exclusionTags>
+					</li>
+				</filterList>
+			</li>
+		</modExtensions>
+	</GeneDef>
+	
+	
+	<!--
+	You can exclude certain genes from Gene_Filtered as well
+	If you want a pawn to have a random horn and not no horn (Headbone_Human)
+	type the defname into the <excluded> tag. This tag can take multiple inputs
+	We are using minMetabolism in this example because some modded genes have a metabolism cost to their horns/antlers
+	-->
+	<GeneDef ParentName="HALI_RandomFilteredBase">
+		<defName>TEST_HALI_RandomHorns</defName>
+		<label>random horns / antlers</label>
+		<description>Carriers will have a randomly assigned set of horns or antlers.</description>
+		<displayOrderInCategory>10</displayOrderInCategory>
+		<modExtensions>
+			<li Class="HALI_RandomGenetics.Gene_Filtered">
+				<filterList>
+					<li>
+						<exclusionTags>
+							<li>Headbone</li>
+						</exclusionTags>
+						<minMetabolism>0</minMetabolism>
+						<excluded>
+							<li>Headbone_Human</li>
+						</excluded>
+					</li>
+				</filterList>
+			</li>
+		</modExtensions>
+	</GeneDef>
+	
+	
+	<!--
+	You can apply filler to Gene_Filtered as well. If you want a pawn to have
+	a random horn, not Headbone_Human, but still have a chance for no horn.
+	just use <filler>
+	-->
+	<GeneDef ParentName="HALI_RandomFilteredBase">
+		<defName>TEST_HALI_RandomHornsMaybe</defName>
+		<label>random horns / antlers</label>
+		<description>Carriers will have a randomly assigned set of horns or antlers.</description>
+		<displayOrderInCategory>10</displayOrderInCategory>
+		<modExtensions>
+			<li Class="HALI_RandomGenetics.Gene_Filtered">
+				<filterList>
+					<li>
+						<exclusionTags>
+							<li>Headbone</li>
+						</exclusionTags>
+						<minMetabolism>0</minMetabolism>
+						<excluded>
+							<li>Headbone_Human</li>
+						</excluded>
+						<filler>1</filler>
+					</li>
+				</filterList>
+			</li>
+		</modExtensions>
+	</GeneDef>
+
+
+</Defs>

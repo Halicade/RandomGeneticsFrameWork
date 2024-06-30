@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<!--
+	Gene_Multi will allow you to have multiple random genes at the same time with different weights
+	If <weight> is not included it will default to 1
+	In this example, you will first get a
+	2/5 chance of Skin_InkBlack & Skin_Blue
+	1/5 chance of Skin_PaleRed
+	2/5 chance of nothing
+	
+
+	8/9 chance of Tail_Furry
+	1/9 chance of Tail_Smooth
+	-->
+	<GeneDef ParentName="HALI_RandomMultiBase">
+		<defName>TEST_HALI_MultipleGenes</defName>
+		<label>multiple different genes</label>
+		<description>Carriers of this gene will receive a random set of genes.</description>
+		<iconPath>UI/Icons/Genes/RG_RandomIcon</iconPath>
+		
+		<displayOrderInCategory>15</displayOrderInCategory>
+		
+		<modExtensions>
+			<li Class="HALI_RandomGenetics.Multi_Rand_List">
+				<geneList>
+					<li>
+						<genesAndWeight>
+							<li>
+								
+								<genes>
+									<li>Skin_InkBlack</li>
+									<li>Skin_Blue</li>
+								</genes>
+								<weight>2</weight>
+							</li>
+							<li>
+								<genes>
+									<li>Skin_PaleRed</li>
+								</genes>
+							</li>
+						</genesAndWeight>
+						<filler>2</filler>
+					</li>
+					<li>
+						<genesAndWeight>
+							<li>
+								<genes>
+									<li>Tail_Furry</li>
+								</genes>
+								<weight>8</weight>
+							</li>
+							<li>
+								<genes>
+									<li>Tail_Smooth</li>
+								</genes>
+							</li>
+						</genesAndWeight>
+					</li>
+				</geneList>
+			</li>
+		</modExtensions>
+	</GeneDef>
+	
+	
+	<!--
+	Gene_Multi will allow you to have multiple random genes at the same time with different weights
+	If <weight> is not included it will default to 1
+	In this example, you will first get a
+	2/5 chance of Skin_InkBlack & Skin_Blue
+	1/5 chance of Skin_PaleRed
+	2/5 chance of nothing
+	
+	These will be skipped if Skin_InkBlack & Skin_Blue were picked.
+	8/9 chance of Tail_Furry
+	1/9 chance of Tail_Smooth
+	
+	1/1 chance of Body_Fat
+	
+	-->
+	
+	<GeneDef ParentName="HALI_RandomMultiBase">
+		<defName>TEST_HALI_MultipleGenesWithSkip</defName>
+		<label>multiple different genes with a skip</label>
+		<description>Carriers of this gene will receive a random set of genes.</description>
+		<iconPath>UI/Icons/Genes/RG_RandomIcon</iconPath>
+		
+		<displayOrderInCategory>15</displayOrderInCategory>
+		
+		<modExtensions>
+			<li Class="HALI_RandomGenetics.Multi_Rand_List">
+				<geneList>
+					<li>
+						<genesAndWeight>
+							<li>
+								
+								<genes>
+									<li>Skin_InkBlack</li>
+									<li>Skin_Blue</li>
+								</genes>
+								<weight>2</weight>
+								<skip>1</skip>
+							</li>
+							<li>
+								<genes>
+									<li>Skin_PaleRed</li>
+								</genes>
+							</li>
+						</genesAndWeight>
+						<filler>2</filler>
+					</li>
+					<li>
+						<genesAndWeight>
+							<li MayRequire="biotexpans.mammalia">
+								<genes>
+									<li>BTEMa_Tail_Small</li>
+								</genes>
+								<weight>3</weight>
+							</li>
+							<li>
+								<genes>
+									<li>Tail_Furry</li>
+								</genes>
+								<weight>8</weight>
+							</li>
+							<li>
+								<genes>
+									<li>Tail_Smooth</li>
+								</genes>
+							</li>
+						</genesAndWeight>
+					</li>
+					<li>
+						<genesAndWeight>
+							<li>
+								<genes>
+									<li>Body_Fat</li>
+								</genes>
+							</li>
+						
+						</genesAndWeight>
+					</li>
+				</geneList>
+			</li>
+		</modExtensions>
+	</GeneDef>
+</Defs>

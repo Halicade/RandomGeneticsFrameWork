@@ -57,11 +57,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FilterClasses.cs" />
-    <Compile Include="RandomColor.cs" />
-    <Compile Include="RandomMultiFilter.cs" />
-    <Compile Include="RandomMultiple.cs" />
-    <Compile Include="RandomFilter.cs" />
+    <Compile Include="Source\FilterClasses.cs" />
+    <Compile Include="Source\RandomColor.cs" />
+    <Compile Include="Source\RandomMultiFilter.cs" />
+    <Compile Include="Source\RandomMultiple.cs" />
+    <Compile Include="Source\RandomFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
