@@ -1,14 +1,9 @@
-﻿using System;
+﻿using BetterPrerequisites;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using static RimWorld.FleshTypeDef;
-using Verse.Noise;
-using BetterPrerequisites;
-using RimWorld;
 
 namespace HALI_RandomGenetics
 {

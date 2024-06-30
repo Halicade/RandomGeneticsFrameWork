@@ -1,7 +1,5 @@
-﻿using BetterPrerequisites;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Verse;
-using static HarmonyLib.Code;
 
 namespace HALI_RandomGenetics
 {

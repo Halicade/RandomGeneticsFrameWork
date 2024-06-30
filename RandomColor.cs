@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using Verse;
-using static HarmonyLib.Code;
 
 namespace HALI_RandomGenetics
 {
@@ -12,9 +8,9 @@ namespace HALI_RandomGenetics
 
 
         public List<ColorFilterList> colorFilterList;
-        
+
         protected internal bool verifyCalculated = false;
-        protected internal int filler=0;
+        protected internal int filler = 0;
         protected internal int totalPossibilities = 0;
 
 
