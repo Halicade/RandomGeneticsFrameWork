@@ -4,11 +4,6 @@ using Verse;
 
 namespace HALI_RandomGenetics
 {
-
-
-
-
-
     public class RandomAny
     {
         public List<FilterList> filterList;
@@ -64,7 +59,6 @@ namespace HALI_RandomGenetics
                 }
             }
 
-
             verifyCalculated = true;
             if (genes?.Any() != true)
             {
@@ -77,14 +71,11 @@ namespace HALI_RandomGenetics
                     }
                 }
             }
-
-
             return true;
-
         }
 
 
-        public bool AssignGenes(Pawn pawn, bool isXenogene)
+        public void AssignGenes(Pawn pawn, bool isXenogene)
         {
 
             if (genes != null)
@@ -94,7 +85,6 @@ namespace HALI_RandomGenetics
                     pawn.genes.AddGene(genes[i], isXenogene);
                 }
             }
-
 
             if (filterList != null)
             {
@@ -112,12 +102,8 @@ namespace HALI_RandomGenetics
                     colorFilterList[i].AssignGenes(pawn, isXenogene);
                 }
             }
-
-
-
-            return true;
+            return;
         }
-
     }
 
 
@@ -139,43 +125,26 @@ namespace HALI_RandomGenetics
                 return true;
             }
 
-
             for (int i = randomAny.Count - 1; i >= 0; i--)
             {
 
                 if (randomAny[i].VerifyValues() == false)
                 {
-
                     totalPossibilities += randomAny[i].weight;
                     randomAny.RemoveAt(i);
-
                 }
                 else
                 {
                     totalWeight += randomAny[i].weight;
                     totalPossibilities += randomAny[i].weight;
                 }
-
             }
             totalPossibilities += filler;
             verifyCalculated = true;
-            if (randomAny.Count == 0)
-            {
-                //there were no possibile gene lists to be found
-                return false;
-            }
 
-
-            return true;
+            return randomAny.Any();
         }
 
-        /// <summary>
-        /// Generate random value.
-        /// If the Value is greater than the total weight, return.
-        /// If not go through for loop to find where the value is that reaches that weight.
-        /// </summary>
-        /// <param name="pawn"></param>
-        /// <param name="isXenogene"></param>
         public void AssignGenes(Pawn pawn, bool isXenogene)
         {
 
@@ -186,25 +155,20 @@ namespace HALI_RandomGenetics
                 //filler value was reached
                 return;
             }
-            else
+
+            int searchedweights = 0;
+            for (int i = 0; i < randomAny.Count; i++)
             {
-
-                int searchedweights = 0;
-                for (int i = 0; i < randomAny.Count; i++)
+                searchedweights += randomAny[i].weight;
+                if (Rvalue < searchedweights)
                 {
-                    searchedweights += randomAny[i].weight;
-                    if (Rvalue < searchedweights)
-                    {
-                        randomAny[i].AssignGenes(pawn, isXenogene);
-                        break;
-                    }
+                    randomAny[i].AssignGenes(pawn, isXenogene);
+                    break;
                 }
-
             }
 
             return;
         }
-
     }
 
 

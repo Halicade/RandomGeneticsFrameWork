@@ -31,11 +31,7 @@ namespace HALI_RandomGenetics
             }
             verifyCalculated = true;
             totalPossibilities += filler;
-            if (colorFilterList.Count == 0)
-            {
-                return false;
-            }
-            return true;
+            return colorFilterList.Any();
         }
 
         /// <summary>
@@ -47,20 +43,14 @@ namespace HALI_RandomGenetics
         /// <param name="isXenogene"></param>
         public void AssignGenes(Pawn pawn, bool isXenogene)
         {
-
-
-
             int Rvalue = Rand.Range(0, totalPossibilities);
-            //Log.Message("Rvalue is " + Rvalue + "Total possibilities is " + genelist.TotalPossibilities);
             int totalweights = 0;
-            for (int j = 0; j < colorFilterList.Count; j++)
+            for (int i = 0; i < colorFilterList.Count; i++)
             {
-                totalweights += colorFilterList[j].weight;
-
+                totalweights += colorFilterList[i].weight;
                 if (Rvalue < totalweights)
                 {
-
-                    colorFilterList[j].AssignGenes(pawn, isXenogene);
+                    colorFilterList[i].AssignGenes(pawn, isXenogene);
                     return;
 
                 }

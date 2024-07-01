@@ -13,7 +13,6 @@ namespace HALI_RandomGenetics
         protected internal int totalPossibilities = 0;
         protected internal int totalWeight = 0;
 
-
         public bool VerifyValues()
         {
 
@@ -21,7 +20,6 @@ namespace HALI_RandomGenetics
             {
                 return true;
             }
-
 
             for (int i = filterList.Count - 1; i >= 0; i--)
             {
@@ -38,15 +36,8 @@ namespace HALI_RandomGenetics
             }
             totalPossibilities += filler;
             verifyCalculated = true;
-            if (filterList.Count == 0)
-            {
+            return filterList.Any();
 
-                return false;
-            }
-
-
-
-            return true; ;
         }
 
         public void AssignGenes(Pawn pawn, bool isXenogene)

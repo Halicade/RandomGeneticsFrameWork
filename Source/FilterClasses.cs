@@ -8,6 +8,9 @@ using Verse;
 namespace HALI_RandomGenetics
 {
 
+    /// <summary>
+    /// Contains filter for filtering genes
+    /// </summary>
     public class FilterList
     {
         public List<string> exclusionTags;
@@ -25,7 +28,7 @@ namespace HALI_RandomGenetics
         public List<string> excluded;
         public String defType = "Verse.GeneDef";
         public int weight = 1;
-        public int timesToRepeat = 1;
+        public int timesToPerform = 1;
 
         protected internal int cachedTotal = -1;
         protected internal List<GeneDef> possibleVals;
@@ -116,12 +119,11 @@ namespace HALI_RandomGenetics
                         "\nmaxComplexity = " + maxComplexity +
                         "\nminArchite = " + minArchite +
                         "\nmaxArchite = " + maxArchite +
-                        "\nhasPrerequisite = " + canHavePrerequisite +
+                        "\ncanHavePrerequisite = " + canHavePrerequisite +
                         "\nneedsPrerequisite = ";
             if (needsPrerequisite != null)
             {
                 tostringText += String.Join(", ", needsPrerequisite.ToArray());
-
             }
             else
             {
@@ -144,6 +146,11 @@ namespace HALI_RandomGenetics
 
         }
 
+        /// <summary>
+        /// Checks for exclusion tags in the gene and our filter to see if they match
+        /// </summary>
+        /// <param name="g"></param>
+        /// <returns>true if there is a match or <exclusionTags /> is blank</returns>
         private bool CheckExclusionTags(GeneDef g)
         {
             if (exclusionTags == null)
@@ -154,14 +161,9 @@ namespace HALI_RandomGenetics
             {
                 return false;
             }
-            if (exclusionTags.Intersect(g.exclusionTags).Any())
-            {
-                return true;
-            }
-            return false;
+            return (exclusionTags.Intersect(g.exclusionTags).Any());
 
         }
-
 
         private bool CheckPrerequisites(GeneDef g)
         {
@@ -194,8 +196,8 @@ namespace HALI_RandomGenetics
                 }
                 return true;
             }
-            //At this point, we know needsPrerequisite is not null and we know canHavePrerequisite is true
 
+            //At this point, we know needsPrerequisite is not null and we know canHavePrerequisite is true
             //Need to see if gene does not have prerequisites and betterPrerequisites is empty
             if (g?.prerequisite == null)
             {
@@ -235,7 +237,6 @@ namespace HALI_RandomGenetics
         }
 
         /// <summary>
-        /// Code was stolen with permission from RedMattis' Big and Small - Framework
         /// Checks to see if GenePrerequisites has any prerequisites stored.
         /// </summary>
         /// <param name="g"></param>
@@ -249,19 +250,15 @@ namespace HALI_RandomGenetics
             }
             GenePrerequisites betterPrereqs = g.GetModExtension<BetterPrerequisites.GenePrerequisites>();
 
-            if (betterPrereqs?.prerequisiteSets == null)
-            {
-
-                return true;
-            }
-            return false;
+            return betterPrereqs?.prerequisiteSets == null;
         }
 
         /// <summary>
+        /// Code was stolen with permission from RedMattis' Big and Small - Framework
         /// Will check to see if betterPrerequisites has a gene and if it matches our prerequisite list
         /// </summary>
         /// <param name="g"></param>
-        /// <returns></returns>
+        /// <returns>True if prerequisites match</returns>
         private bool CheckBetterPrerequisites(GeneDef g)
         {
 
@@ -301,18 +298,19 @@ namespace HALI_RandomGenetics
                             break;
                             */
                     }
-                    if (!result) return false;
+                    if (!result)
+                    {
+                        return false;
+                    }
                 }
             }
-
-
 
             return true;
         }
 
         public void AssignGenes(Pawn pawn, bool isXenogene)
         {
-            for (int i = 0; i < timesToRepeat; i++)
+            for (int i = 0; i < timesToPerform; i++)
             {
                 int Rvalue = Rand.Range(0, possibleVals.Count() + filler);
                 if (Rvalue < possibleVals.Count)
@@ -336,9 +334,7 @@ namespace HALI_RandomGenetics
         public int filler = 0;
         public int weight = 1;
         public String defType = "Verse.GeneDef";
-        public int timesToRepeat = 1;
-
-
+        public int timesToPerform = 1;
         public ColorType colorType;
         public SimilarBy similarBy = 0;
 
@@ -356,10 +352,7 @@ namespace HALI_RandomGenetics
         protected internal List<GeneDef> matchingColors;
         protected internal bool filterCalculated = false;
 
-        /// <summary>
-        /// Will generate to see how many values are created.
-        /// </summary>
-        /// <returns>false if there are no values in matchingColors</returns>
+
         public bool VerifyValues()
         {
             if (filterCalculated)
@@ -370,53 +363,51 @@ namespace HALI_RandomGenetics
             switch (colorType)
             {
                 case ColorType.HairColor:
-                    //DefDatabase<GeneDef>;
+
                     matchingColors = DefDatabase<GeneDef>.AllDefsListForReading
                     .Where(g =>
+                    g.biostatMet == 0 &&
+                    g.biostatCpx == 0 &&
                     g?.exclusionTags?.Contains("HairColor") == true &&
-                    g?.hairColorOverride != null &&
+                    g.hairColorOverride.HasValue &&
                     SimilarColor(g.hairColorOverride.Value, colorToCheck, toleranceLevel)
-
                     && (excluded?.Any() == true ? (excluded.Contains(g.defName) == false) : true) == true
 
                     ).ToList();
-
+                    filterCalculated = true;
                     if (matchingColors.Count == 0)
                     {
                         Log.Warning("No similar HairColor were found for ColorFilterList with conditions " + ToString());
                         return false;
                     }
                     totalPossibilities = matchingColors.Count + filler;
-                    filterCalculated = true;
-                    break;
+                    return filterCalculated;
 
                 case ColorType.SkinColor:
 
                     matchingColors = DefDatabase<GeneDef>.AllDefsListForReading
                     .Where(g =>
+                    g.biostatMet == 0 &&
+                    g.biostatCpx == 0 &&
                     g?.exclusionTags?.Contains("SkinColorOverride") == true &&
+                    g.skinColorOverride.HasValue &&
                     SimilarColor(g.skinColorOverride.Value, colorToCheck, toleranceLevel)
 
                     && (excluded?.Any() == true ? (excluded.Contains(g.defName) == false) : true) == true
                     ).ToList();
 
-
+                    filterCalculated = true;
                     if (matchingColors.Count == 0)
                     {
                         Log.Warning("No similar SkinColorOverride were found for ColorFilterList with conditions " + ToString());
                         return false;
                     }
                     totalPossibilities = matchingColors.Count + filler;
-                    filterCalculated = true;
-                    break;
-
+                    return filterCalculated;
                 default:
                     Log.Error("You entered the wrong tag for <colorType> it should be <colorType>SkinColor</colorType> or <colorType>HairColor</colorType>" + ToString());
                     return false;
-                    //break;
             }
-
-            return filterCalculated;
 
         }
 
@@ -497,59 +488,21 @@ namespace HALI_RandomGenetics
                     Log.Error("You entered the wrong tag for <similarBy> it should be RGB, Hue, Sat, or Val." + ToString());
                     return false;
             }
-            return false;
-
-
-
         }
 
 
         public void AssignGenes(Pawn pawn, bool isXenogene)
         {
-            for (int i = 0; i < timesToRepeat; i++)
+            for (int i = 0; i < timesToPerform; i++)
             {
                 int Rvalue = Rand.Range(0, totalPossibilities);
                 if (Rvalue < matchingColors.Count)
                 {
                     pawn.genes.AddGene(matchingColors[Rvalue], isXenogene);
-
-
                 }
 
             }
             return;
         }
     }
-
-
-    public class GeneList
-    {
-        public GeneDef gene;
-
-        public bool VerifyValues()
-        {
-
-            if (DefDatabase<GeneDef>.AllDefsListForReading.Contains(gene))
-            {
-                return true;
-            }
-            else
-            {
-                Log.Warning("Unable to load gene with genedef " + gene.defName + " it was likely removed through cherrypicker or other means");
-                return false;
-
-            }
-
-
-        }
-
-        public void AssignGenes(Pawn pawn, bool isXenogene)
-        {
-
-            pawn.genes.AddGene(gene, isXenogene);
-            return;
-        }
-    }
-
-
 }

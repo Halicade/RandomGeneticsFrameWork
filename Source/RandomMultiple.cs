@@ -4,8 +4,6 @@ using Verse;
 namespace HALI_RandomGenetics
 {
 
-
-
     public class GenesAndWeight
     {
         public List<GeneDef> genes;
@@ -142,7 +140,7 @@ namespace HALI_RandomGenetics
         }
 
         /// <summary>
-        /// AssignGene assumes we already checked totalPossibilities for it
+        /// Assigns genes to the pawn from genesAndWeight
         /// </summary>
         /// <param name="pawn"></param>
         /// <param name="isXenogene"></param>
@@ -217,8 +215,6 @@ namespace HALI_RandomGenetics
             base.PostAdd();
 
             Multi_Rand_List multi = def.GetModExtension<Multi_Rand_List>();
-            //Log.Message("Filler is " + multi.geneList[0].filler+ multi.geneList[0].geneAndWeight[0].weight);
-            //multi.AssignGene(pawn, pawn.genes.IsXenogene(this));
 
             if (multi == null)
             {
