@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 	<!--
-	Gene_Multi will allow you to have multiple random genes at the same time with different weights
-	If <weight> is not included it will default to 1
+	Gene_Multi will allow you to add multiple random genes at the same time.
+	<Genes> will allow you to list specific genes by name that you want.
+	<filterList> and <colorFilterList> can be used in addition to <genes>
+	<skip> defaults to 0
+	-You can skip the next list if that selection of genes is chosen.
+	<weight> defaults to 1
+	<filler> defaults to 0
+	-->
+	
+	<!--
 	In this example, you will first get a
 	2/5 chance of Skin_InkBlack & Skin_Blue
 	1/5 chance of Skin_PaleRed
@@ -24,6 +32,7 @@
 			<li Class="HALI_RandomGenetics.Multi_Rand_List">
 				<geneList>
 					<li>
+						<!--One <li> from this section will be chosen-->
 						<genesAndWeight>
 							<li>
 								
@@ -42,6 +51,7 @@
 						<filler>2</filler>
 					</li>
 					<li>
+						<!--One <li> from this section will be chosen-->
 						<genesAndWeight>
 							<li>
 								<genes>
@@ -63,8 +73,6 @@
 	
 	
 	<!--
-	Gene_Multi will allow you to have multiple random genes at the same time with different weights
-	If <weight> is not included it will default to 1
 	In this example, you will first get a
 	2/5 chance of Skin_InkBlack & Skin_Blue
 	1/5 chance of Skin_PaleRed
@@ -74,6 +82,7 @@
 	8/9 chance of Tail_Furry
 	1/9 chance of Tail_Smooth
 	
+	After you will receive
 	1/1 chance of Body_Fat
 	
 	-->
@@ -92,7 +101,6 @@
 					<li>
 						<genesAndWeight>
 							<li>
-								
 								<genes>
 									<li>Skin_InkBlack</li>
 									<li>Skin_Blue</li>
@@ -110,12 +118,6 @@
 					</li>
 					<li>
 						<genesAndWeight>
-							<li MayRequire="biotexpans.mammalia">
-								<genes>
-									<li>BTEMa_Tail_Small</li>
-								</genes>
-								<weight>3</weight>
-							</li>
 							<li>
 								<genes>
 									<li>Tail_Furry</li>

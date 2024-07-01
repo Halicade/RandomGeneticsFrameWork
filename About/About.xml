@@ -12,5 +12,5 @@
 		<li>ludeon.rimworld.biotech</li>
 	</loadAfter>
 	
-	<description>Framework for random genetics</description>
+	<description>Framework for creating random genetics. Information is in the Documentation folder.</description>
 </ModMetaData>

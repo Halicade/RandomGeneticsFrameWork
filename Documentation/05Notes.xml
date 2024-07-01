@@ -4,7 +4,12 @@
 	<!--
 	Unlike the other pages, this page should not be copied into the regular Defs folder
 	-->
-	
+	<notes>
+		<li>This gene assignment follows the same logic as vanilla.
+			<li>if the same gene is added as a germline gene, it will not be added.</li>
+			<li>if the same gene is added as a xenogene, there will be a duplicate.</li>
+		</li>
+	</notes>
 	
 	<changes>
 		<!--

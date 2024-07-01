@@ -2,50 +2,53 @@
 <Defs>
 	
 	<Description>
-		<li>Random Genetics Framework is designed to generate random colonists based off your own conditions</li>
-		<li>Built with compatibility and ease of use in mind, this documentation should address all questions.</li>
-		<li>After the gene is added to a pawn, it will assign all the genes it was told to and then remove itself.</li>
-	
-	
+		<li>Random Genetics Framework is designed to generate random genes for pawns based on your own conditions.</li>
+		<li>Built with compatibility and ease of use in mind, this documentation should address any questions you have.</li>
 	</Description>
 	
+	<ThingsYouCanDo>
+		<li>Have a pawn receive 1 of multiple choices of genes. Or even multiple genes all at random.</li>
+		<li>Generate a random gene based on various conditions like metabolism, exclusionTag, or if it has an ability or prerequisite.</li>
+		<li>Generate random hair or skin colors that are all similar by RGB, Hue, Saturation, or Value.</li>
+		<li>Have a set of genes that will only be used if a certain mod is active.</li>
+		<li>Adjust weights and fillers so certain selections are more common than others or prevent a selection from even occurring..</li>
+		<li>After the gene is added to a pawn, it will assign all the genes it was told to and then remove itself.</li>
+	</ThingsYouCanDo>
+	
 	<ReasonsToUse>
-		<li>You have over 5000 genes in your modlist and want more variety</li>
-		<li>You want a Xenotype to be more diverse in genetics being chosen</li>
-		<li>You can't make up which gene you want to add to a Xenotype and want to add both</li>
-		<li>You want to add a gene to a xenotype but only when another mod is available, and you want to add another gene with it to balance it out</li>
-		<li>You like diversity and are tired of your Xenoptypes all having the same shade of green hair when there are over 400 different hairdefs</li>
+		<li>You have over 5000 genes in your modlist and want more variety in your pawns.</li>
+		<li>You want a Xenotype to be more diverse in genetics being chosen.</li>
+		<li>You can't make up which gene you want to add to a Xenotype and want to add both.</li>
+		<li>You want to add a gene to a xenotype but only when another mod is available, but you want to use another gene if it's not available.</li>
+		<li>You like diversity and are tired of your Xenoptypes all having the same shade of green hair when there are over 300 different genetic hair colors</li>
 		<li>You don't want to create an entirely new Xenotype to give a pawn a super special ultra instincts gene.</li>
 	</ReasonsToUse>
 	
-	<ThingsYouCanDo>
-		<li>Generate a random gene based on various conditions like metabolism, exclusionTag, or if it has an ability or prerequisite.</li>
-		<li>Generate random hair or skin colors that are all similar by RBG, Hue, Saturation, or Value.</li>
-		<li>Have a set of genes that will only be used if a certain mod is active
-			<li>You can tell it to add base biotech genes and outside genes at the same time</li>
-		</li>
-		<li>Adjust weights and fillers so certain selections are more common than others.</li>
-	
-	</ThingsYouCanDo>
-	
 	<UsingThisDocumentation>
-		<li>The files 01-04 can be copy and pasted into the Defs folder to see how they work for demonstration purposes</li>
-		<li>This file and 05Notes.xml can not be copied into Defs. Rimworld will yell at you.</li>
+		<li>The files numbered 01-04 can be copied and pasted into the Defs folder to see how they work for demonstration purposes.</li>
+		<li>This file 00intro.xml and 05Notes.xml can not be copied into Defs. Rimworld will yell at you.</li>
+		<li>The genes themselves have comments on how they are used.</li>
+		<li>05Notes.xml contains extra information such as genes you should exclude from randomly generating or other miscellaneous things you can do.</li>
+		<li>Alternatively, you can look at the genes used in the separate random genes mod.</li>
 	</UsingThisDocumentation>
 	
 	<compatibility>
-		<li>I haven't tested all 7000 genes, but everything I've tested so far has worked.</li>
+		<li>I haven't tested all 5000+ genes, but everything I've tested so far has worked.</li>
+		<li>Compatible with Cherry Picker. Any genes included that you remove through Cherry Picker will not generate on pawns.</li>
 		<li>This has compatibility with RedMattis' Big and Small - Framework. With their permission, I used their code for betterprerequisites to ensure compatibility</li>
+		<li>This mod should be removable at any time. The genes on the pawns that were already spawned will not disappear.</li>
+		<li>You will of course receive errors if your xenotypes are using any genes made using this when trying to spawn them.</li>
 	</compatibility>
 	
 	
 	<credits>
-		<modName>
+		<mods>
 			<li>Goji's Fantasy Race: Merren</li>
 			<li>Det's Xenotypes - Avaloi</li>
 			
-			<note>These mods were my main influence in creating this. A single function was all I needed from each of these and here we are. Thank you!</note>
-		</modName>
+			<note>These mods were my main influence in creating this.
+				They each had functions for creating their own random genes which showed me how to even start this mod. Thank you!</note>
+		</mods>
 		
 		
 		<author>

@@ -22,11 +22,10 @@
 	Hemogenic and a random ability, or
 	Skin_InkBlack, and Tail_Furry
 	-->
-	
 	<GeneDef ParentName="HALI_RandomAnyBase">
 		<defName>TEST_HALI_RandomHemogenicAbility</defName>
 		<label>random hemogenic ability</label>
-		<description>Carriers will get the Hemogenic gene as well as a random Hemogenic Ability</description>
+		<description>Carriers will get the Hemogenic gene as well as a random Hemogenic Ability or they will recieve ink black skin and a furry tail.</description>
 		<displayOrderInCategory>10</displayOrderInCategory>
 		<modExtensions>
 			<li Class="HALI_RandomGenetics.Any_List_Random">
