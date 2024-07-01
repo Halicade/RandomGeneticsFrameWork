@@ -26,8 +26,8 @@
 	-Note that this will not check if the pawn in question has that prerequisite. It can add a gene regardless of the prerequisite status
 	<needsPrerequisite> blank by default
 	-If the filter has <needsPrerequisite> the genes listed inside will need to match the GeneDefs prerequisite
-	<timesToRepeat> defaults to 1
-	-If the filter has <timesToRepeat> at a value larger than 1, it will try to insert another gene that matches the criteria that many times
+	<timesToPerform> defaults to 1
+	-If the filter has <timesToPerform> at a value larger than 1, it will try to insert another gene that matches the criteria that many times
 	-This gene assignment follows the same logic as vanilla,
 		-if the same gene is added as a germline gene, it will not be added
 		-if the same gene is added as a xenogene, there will be a duplicate
