@@ -11,7 +11,7 @@
 		<li>Generate a random gene based on various conditions like metabolism, exclusionTag, or if it has an ability or prerequisite.</li>
 		<li>Generate random hair or skin colors that are all similar by RGB, Hue, Saturation, or Value.</li>
 		<li>Have a set of genes that will only be used if a certain mod is active.</li>
-		<li>Adjust weights and fillers so certain selections are more common than others or prevent a selection from even occurring..</li>
+		<li>Adjust weights and fillers so certain selections are more common than others or prevent a selection from even occurring.</li>
 		<li>After the gene is added to a pawn, it will assign all the genes it was told to and then remove itself.</li>
 	</ThingsYouCanDo>
 	
@@ -20,7 +20,7 @@
 		<li>You want a Xenotype to be more diverse in genetics being chosen.</li>
 		<li>You can't make up which gene you want to add to a Xenotype and want to add both.</li>
 		<li>You want to add a gene to a xenotype but only when another mod is available, but you want to use another gene if it's not available.</li>
-		<li>You like diversity and are tired of your Xenoptypes all having the same shade of green hair when there are over 300 different genetic hair colors</li>
+		<li>You like diversity and are tired of your Xenoptypes all having the same shade of green hair when there are over 300 different genetic hair colors.</li>
 		<li>You don't want to create an entirely new Xenotype to give a pawn a super special ultra instincts gene.</li>
 	</ReasonsToUse>
 	
@@ -35,7 +35,7 @@
 	<compatibility>
 		<li>I haven't tested all 5000+ genes, but everything I've tested so far has worked.</li>
 		<li>Compatible with Cherry Picker. Any genes included that you remove through Cherry Picker will not generate on pawns.</li>
-		<li>This has compatibility with RedMattis' Big and Small - Framework. With their permission, I used their code for betterprerequisites to ensure compatibility</li>
+		<li>This has compatibility with RedMattis' Big and Small - Framework. With their permission, I used their code for betterprerequisites to ensure compatibility.</li>
 		<li>This mod should be removable at any time. The genes on the pawns that were already spawned will not disappear.</li>
 		<li>You will of course receive errors if your xenotypes are using any genes made using this when trying to spawn them.</li>
 	</compatibility>

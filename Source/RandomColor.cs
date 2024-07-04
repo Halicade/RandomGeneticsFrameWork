@@ -8,9 +8,9 @@ namespace HALI_RandomGenetics
 
 
         public List<ColorFilterList> colorFilterList;
+        public int filler = 0;
 
         protected internal bool verifyCalculated = false;
-        protected internal int filler = 0;
         protected internal int totalPossibilities = 0;
 
 

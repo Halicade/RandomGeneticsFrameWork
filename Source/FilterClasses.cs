@@ -61,7 +61,6 @@ namespace HALI_RandomGenetics
 
             possibleVals = DefDatabase<GeneDef>.AllDefsListForReading
             .Where(g =>
-
             g?.biostatMet >= minMetabolism &&
             g?.biostatMet <= maxMetabolism &&
             g?.biostatCpx >= minComplexity &&
@@ -76,7 +75,6 @@ namespace HALI_RandomGenetics
 
             g.GetType().ToString().Equals(defType) &&
             CheckExclusionTags(g) &&
-
             (excluded == null ? true : excluded?.Contains(g.defName) == false)
             ).ToList();
 

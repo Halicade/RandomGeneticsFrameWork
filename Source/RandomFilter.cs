@@ -20,7 +20,7 @@ namespace HALI_RandomGenetics
             {
                 return true;
             }
-
+            
             for (int i = filterList.Count - 1; i >= 0; i--)
             {
                 if (filterList[i].VerifyValues() == false)
@@ -82,7 +82,7 @@ namespace HALI_RandomGenetics
                 Log.Error("Unable to find modExtensions \"HALI_RandomGenetics.Gene_Filtered\" for " + this.def + " " + this.Label);
                 return;
             }
-
+            
             if (filtered.VerifyValues())
             {
                 filtered.AssignGenes(pawn, pawn.genes.IsXenogene(this));
