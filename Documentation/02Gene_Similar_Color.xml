@@ -27,7 +27,7 @@
 	<!--
 	In the below example, a random skin color that is similar to Skin_PaleYellow will be generated on the pawn
 	-->
-	<GeneDef ParentName="HALI_RandomColorBase">
+	<GeneDef ParentName="HALI_RandomGeneticsBase">
 		<defName>TEST_HALI_RandomSimilarSkinYellow</defName>
 		<label>similar color skin</label>
 		<description>Carriers will get a random hair color close to yellow</description>
@@ -52,7 +52,7 @@
 	2/5 chance for a random hair color that is similar to Hair_SandyBlonde will be generated on the pawn
 	
 	-->
-	<GeneDef ParentName="HALI_RandomColorBase">
+	<GeneDef ParentName="HALI_RandomGeneticsBase">
 		<defName>TEST_HALI_RandomSimilarSkinHairYellowBlonde</defName>
 		<label>similar color skin or hair</label>
 		<description>Carriers will get a random hair color or skin color close to yellow or blonde</description>
@@ -82,7 +82,7 @@
 	<!--
 	This example is using SatVal
 	-->
-	<GeneDef ParentName="HALI_RandomColorBase">
+	<GeneDef ParentName="HALI_RandomGeneticsBase">
 		<defName>TEST_HALI_RandomPastelHair</defName>
 		<label>similar color skin</label>
 		<description>Carriers will get a random pastel hair color</description>

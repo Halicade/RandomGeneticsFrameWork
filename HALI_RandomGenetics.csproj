@@ -7,11 +7,12 @@
     <ProjectGuid>{F9557AE4-749E-4260-A485-17D5A9A24C93}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RandomGenetics</RootNamespace>
-    <AssemblyName>RandomGenetics</AssemblyName>
+    <RootNamespace>HALI_RandomGenetics</RootNamespace>
+    <AssemblyName>HALI_RandomGenetics</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -57,12 +58,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\FilterClasses.cs" />
-    <Compile Include="Source\RandomColor.cs" />
-    <Compile Include="Source\RandomMultiFilter.cs" />
-    <Compile Include="Source\RandomMultiple.cs" />
-    <Compile Include="Source\RandomFilter.cs" />
+    <Compile Include="Source\Any_List_Random.cs" />
+    <Compile Include="Source\ApplyRandomGenes.cs" />
+    <Compile Include="Source\ColorFilterList.cs" />
+    <Compile Include="Source\FilterList.cs" />
+    <Compile Include="Source\GeneticList.cs" />
+    <Compile Include="Source\Harmony.cs" />
+    <Compile Include="Source\Gene_Similar_Color.cs" />
+    <Compile Include="Source\Multi_Rand_List.cs" />
+    <Compile Include="Source\RandomAny.cs" />
+    <Compile Include="Source\GenesAndWeight.cs" />
+    <Compile Include="Source\Gene_Filtered.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\RandomGene.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

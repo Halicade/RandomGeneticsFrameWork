@@ -13,9 +13,10 @@
 	
 	<changes>
 		<!--
-		EBSG has a patch that will add EBSG_ContractedStomach (metabolism +2) to any xeno that has strongStomach gene.
-		It also changes metabolism of the strongStomach gene to -3.
+		EBSG has a patch that will changes metabolism of the strongStomach gene to -3.
+		Previously, it would also add EBSG_ContractedStomach (metabolism +2) to any xeno that has strongStomach gene.
 		Because it would not affect the genes inside modextensions, you will need to do something like below if being entered manually.
+		Of course you can ignore this as well. Just take care to note the metabolism change.
 		-->
 		<li>
 			<genes>
@@ -25,6 +26,7 @@
 		</li>
 	
 	</changes>
+	
 	
 	
 	<exclusions>
@@ -68,6 +70,8 @@
 		
 		</SkinColorOverride>
 	</exclusions>
+	
+	
 	
 	<MayRequire>
 		<!--
@@ -128,6 +132,8 @@
 		-->
 	</MayRequire>
 	
+	
+	
 	<CherryPicker>
 		<!--
 		If a gene is removed with Cherry Picker or through similar mods, the framework will respect that choice
@@ -163,6 +169,7 @@
 	</CherryPicker>
 	
 	
+	
 	<!--
 	with filters, ExclusionTags for aptitudes (skills) and chemicals are in the same style as below
 	Aptitude_defName or Addiction_defName
@@ -179,6 +186,7 @@
 	</exclusionTags>
 	
 	
+	
 	<!--
 	For genes like the ones used in Vanilla Races Expanded - Android, and Vanilla Races Expanded - Insector
 	you will need to change the filter tage <defType> by default this is Verse.GeneDef
@@ -193,6 +201,7 @@
 	</defType>
 	
 	
+	
 	<!--
 	You can also put random genes inside random genes.
 	I don't recommend doing this too much.
@@ -201,7 +210,7 @@
 	1/2 chance of getting TEST_HALI_RandomTail (along with whatever logic is in that gene)
 	1/2 chance of getting Headbone_MiniHorns
 	-->
-	<GeneDef ParentName="HALI_RandomMultiBase">
+	<GeneDef ParentName="HALI_RandomGeneticsBase">
 		<defName>TEST_HALI_NestedRandom</defName>
 		<label>random nested gene</label>
 		<description>Carriers will get a random tail or minihorns.</description>

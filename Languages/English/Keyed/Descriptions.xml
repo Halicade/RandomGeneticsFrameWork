@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	
+	<HALI_RG_NoGenes>No genes found for this.</HALI_RG_NoGenes>
+	<HALI_RG_Category>Category: {0}</HALI_RG_Category>
+	<HALI_RG_Category_NoLetter>Category </HALI_RG_Category_NoLetter>
+	<HALI_RG_Chance>Chance {0}%</HALI_RG_Chance>
+	<HALI_RG_EachGeneHas>Each gene has a 1/{0} chance of being assigned.\n</HALI_RG_EachGeneHas>
+	<HALI_RG_Skip>The next {0} category(ies) will be skipped.\n</HALI_RG_Skip>
+	<HALI_RG_ChanceAndChosen>There is a {0}% chance this set will be chosen. All genes in this set will be added.\n</HALI_RG_ChanceAndChosen>
+	<HALI_RG_FilterChanceAndChosen>There is a {0}% chance this set will be chosen. One gene from this set will be added.\n</HALI_RG_FilterChanceAndChosen>
+	<HALI_RG_WillBeChosen>One set from these categories will be chosen:</HALI_RG_WillBeChosen>
+	<HALI_RG_OneOf>One of these categories will be chosen:</HALI_RG_OneOf>
+	<HALI_RG_MightBeChosen>There is a {0}% chance one of these categories will be chosen:</HALI_RG_MightBeChosen>
+	<HALI_GR_FilterPresent>There is {0} filter(s) present. Possible genes will be displayed in their row.</HALI_GR_FilterPresent>
+	<HALI_RG_TimesAssigned>A gene will attempt to be given {0} times.</HALI_RG_TimesAssigned>
+	<HALI_RG_HASFilter>{0} filters</HALI_RG_HASFilter>
+	<HALI_RG_CategoryAndFilter>Category: {0}{1} Filter: {2}</HALI_RG_CategoryAndFilter>
+	<HALI_RG_CategoryAndColorFilter>Category: {0}{1} Color Filter: {2}</HALI_RG_CategoryAndColorFilter>
+	
+	<HALI_RG_SetWords>This set has a {0}% chance of occurring.\n</HALI_RG_SetWords>
+	<HALI_RG_SetWillBeUsed>This set will be used.\n</HALI_RG_SetWillBeUsed>
+	<HALI_RG_SetChance>There is a {0}% chance A set will be chosen.\n</HALI_RG_SetChance>
+	
+	<HALI_RG_OneGeneFilter>One gene from this filter will be chosen.\n</HALI_RG_OneGeneFilter>
+	<HALI_RG_MightGeneFilter>There is a {0}% chance a gene from this filter will be chosen.\n</HALI_RG_MightGeneFilter>
+	<HALI_RG_AllGenes>All genes from this list will be added.\n</HALI_RG_AllGenes>
+	<HALI_RG_SetNumber>Set: {0}</HALI_RG_SetNumber>
+	<HALI_RG_AnyGenes>Set: {0} genes</HALI_RG_AnyGenes>
+	
+	<HALI_RG_AnyFilter>Set: {0} filter {1}</HALI_RG_AnyFilter>
+	<HALI_RG_AnyColors>Set: {0} colors {1}</HALI_RG_AnyColors>
+	
+</LanguageData>

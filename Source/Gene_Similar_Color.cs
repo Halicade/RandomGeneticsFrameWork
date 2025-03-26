@@ -1,22 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using RimWorld;
+using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace HALI_RandomGenetics
 {
     public class Gene_Similar_Color : DefModExtension
     {
-
-
         public List<ColorFilterList> colorFilterList;
         public int filler = 0;
 
         protected internal bool verifyCalculated = false;
+        protected internal int totalWeight = 0;
         protected internal int totalPossibilities = 0;
-
+        public int GetChance => (int)((float)totalWeight / totalPossibilities * 100);
 
         public bool VerifyValues()
         {
-
             if (verifyCalculated)
             {
                 return true;
@@ -25,12 +25,16 @@ namespace HALI_RandomGenetics
             {
                 if (colorFilterList[i].VerifyValues() == false)
                 {
-                    totalPossibilities += colorFilterList[i].weight;
+                    filler += colorFilterList[i].weight;
                     colorFilterList.RemoveAt(i);
+                }
+                else
+                {
+                    totalWeight += colorFilterList[i].weight;
                 }
             }
             verifyCalculated = true;
-            totalPossibilities += filler;
+            totalPossibilities = filler + totalWeight;
             return colorFilterList.Any();
         }
 
@@ -51,40 +55,34 @@ namespace HALI_RandomGenetics
                 if (Rvalue < totalweights)
                 {
                     colorFilterList[i].AssignGenes(pawn, isXenogene);
-                    return;
-
+                    break;
                 }
             }
             return;
         }
 
-    }
-
-
-    public class Random_Color_List : Gene
-    {
-        public bool ListVerified = false;
-        public override void PostAdd()
+        public IEnumerable<StatDrawEntry> ReturnStatDrawEntries(int priority, int category)
         {
-            base.PostAdd();
-            Gene_Similar_Color filtered = def.GetModExtension<Gene_Similar_Color>();
-            if (filtered == null)
-            {
-                Log.Error("Unable to find modExtensions \"HALI_RandomGenetics.Gene_Similar_Color\" for " + this.def + " " + this.Label);
-                return;
-            }
 
-            if (filtered.VerifyValues())
-            {
-                filtered.AssignGenes(pawn, pawn.genes.IsXenogene(this));
-            }
-            else
-            {
-                Log.Warning("Random Genetics found no genes for the gene " + this.def + " " + this.Label);
-            }
+            yield return new StatDrawEntry(
+                category: StatCategoryDefOf.Genetics,
+                label: "HALI_RG_Category".Translate(category),
+                valueString: "HALI_RG_Chance".Translate(GetChance),
+                reportText: "",
+                displayPriorityWithinCategory: priority--);
 
-            pawn.genes.RemoveGene(this);
-            return;
+            char letterpos = 'a';
+            for (int i = 0; i < colorFilterList.Count; i++)
+            {
+                yield return new StatDrawEntry(StatCategoryDefOf.Genetics,
+                    "HALI_RG_Category".Translate(category) + letterpos++,
+                    "HALI_RG_Chance".Translate(colorFilterList[i].GetChance),
+                    colorFilterList[i].ColorChance,
+                    priority--,
+                    hyperlinks: Dialog_InfoCard.DefsToHyperlinks(colorFilterList[i].GetGeneDefHyperlinks())
+                    );
+            }
         }
+
     }
 }

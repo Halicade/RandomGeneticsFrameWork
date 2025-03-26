@@ -3,7 +3,7 @@
 	<!--
 	Gene_Multi will allow you to add multiple random genes at the same time.
 	<Genes> will allow you to list specific genes by name that you want.
-	<filterList> and <colorFilterList> can be used in addition to <genes>
+	<filterList> can be used in addition to <genes>
 	<skip> defaults to 0
 	-You can skip the next list if that selection of genes is chosen.
 	<weight> defaults to 1
@@ -20,7 +20,7 @@
 	8/9 chance of Tail_Furry
 	1/9 chance of Tail_Smooth
 	-->
-	<GeneDef ParentName="HALI_RandomMultiBase">
+	<GeneDef ParentName="HALI_RandomGeneticsBase">
 		<defName>TEST_HALI_MultipleGenes</defName>
 		<label>multiple different genes</label>
 		<description>Carriers of this gene will receive a random set of genes.</description>
@@ -35,7 +35,6 @@
 						<!--One <li> from this section will be chosen-->
 						<genesAndWeight>
 							<li>
-								
 								<genes>
 									<li>Skin_InkBlack</li>
 									<li>Skin_Blue</li>
@@ -87,7 +86,7 @@
 	
 	-->
 	
-	<GeneDef ParentName="HALI_RandomMultiBase">
+	<GeneDef ParentName="HALI_RandomGeneticsBase">
 		<defName>TEST_HALI_MultipleGenesWithSkip</defName>
 		<label>multiple different genes with a skip</label>
 		<description>Carriers of this gene will receive a random set of genes.</description>

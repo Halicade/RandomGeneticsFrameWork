@@ -53,7 +53,7 @@
 	Immunity_Strong
 	Immunity_SuperStrong
 	-->
-	<GeneDef ParentName="HALI_RandomFilteredBase">
+	<GeneDef ParentName="HALI_RandomGeneticsBase">
 		<defName>TEST_HALI_RandomByFilters</defName>
 		<label>Random gene by filters</label>
 		<description>Generates a random gene based off of exclusionTags.</description>
@@ -79,7 +79,7 @@
 	type the defname into the <excluded> tag. This tag can take multiple inputs
 	We are using minMetabolism in this example because some modded genes have a metabolism cost to their horns/antlers
 	-->
-	<GeneDef ParentName="HALI_RandomFilteredBase">
+	<GeneDef ParentName="HALI_RandomGeneticsBase">
 		<defName>TEST_HALI_RandomHorns</defName>
 		<label>random horns / antlers</label>
 		<description>Carriers will have a randomly assigned set of horns or antlers.</description>
@@ -109,7 +109,7 @@
 	
 	If the filter finds 5 genes for example, you would have a 2/7 chance of not applying a gene.
 	-->
-	<GeneDef ParentName="HALI_RandomFilteredBase">
+	<GeneDef ParentName="HALI_RandomGeneticsBase">
 		<defName>TEST_HALI_RandomHornsMaybe</defName>
 		<label>random horns / antlers</label>
 		<description>Carriers will have a randomly assigned set of horns or antlers.</description>

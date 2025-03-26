@@ -2,15 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using System.Reflection.Emit;
 using Verse;
 
 namespace HALI_RandomGenetics
 {
-
-    /// <summary>
-    /// Contains filter for filtering genes
-    /// </summary>
     public class FilterList
     {
         public List<string> exclusionTags;
@@ -33,14 +29,51 @@ namespace HALI_RandomGenetics
         protected internal int cachedTotal = -1;
         protected internal List<GeneDef> possibleVals;
         protected internal bool valsCalculated = false;
+        protected internal int totalPossibilities = 0;
 
+        public IEnumerable<DefHyperlink> MyGeneDefHyperlinks
+        {
+            get
+            {
+                if (possibleVals.Count <= 500)
+                {
+                    for (int i = 0; i < possibleVals.Count; i++)
+                    {
+                        yield return new DefHyperlink(possibleVals[i]);
+                    }
+                }
+            }
+        }
+
+        public string GetPossibleValsAsText
+        {
+            get
+            {
+                string vals = "\n";
+                if (possibleVals.Count > 500)
+                {
+                    for (int i = 0; i < possibleVals.Count; i++)
+                    {
+                        vals += "- " + possibleVals[i].LabelCap + "\n";
+                    }
+                }
+                return vals;
+            }
+        }
+
+        public string FilterChance => "HALI_RG_EachGeneHas".Translate(totalPossibilities);
+
+        public string RepetitionTimes => timesToPerform > 1 ? "\n" + "HALI_RG_TimesAssigned".Translate(timesToPerform) : "";
+
+
+        public int GetChance => (int)(((float)possibleVals.Count / totalPossibilities) * 100);
 
         public bool VerifyValues()
         {
 
             if (valsCalculated)
             {
-                return possibleVals.Count != 0;
+                return !possibleVals.Any();
             }
 
             if (canHaveAbility == false && needsAbility == true)
@@ -92,14 +125,13 @@ namespace HALI_RandomGenetics
             exclusionTags = null;
             needsPrerequisite = null;
             excluded = null;
-
+            totalPossibilities = possibleVals.Count + filler;
 
             return true;
         }
 
         public override string ToString()
         {
-
             string tostringText = "\nexclusionTags = ";
 
             if (exclusionTags != null)
@@ -127,7 +159,6 @@ namespace HALI_RandomGenetics
             {
                 tostringText += "null";
             }
-
             tostringText += "\ncanHaveAbility = " + canHaveAbility +
                         "\nneedsAbility = " + needsAbility +
                         "\ndefType = " + defType +
@@ -141,7 +172,6 @@ namespace HALI_RandomGenetics
                 tostringText += "null";
             }
             return tostringText;
-
         }
 
         /// <summary>
@@ -160,13 +190,10 @@ namespace HALI_RandomGenetics
                 return false;
             }
             return (exclusionTags.Intersect(g.exclusionTags).Any());
-
         }
 
         private bool CheckPrerequisites(GeneDef g)
         {
-
-
             //This is for if the pawn can have a prerequsite only
             if (needsPrerequisite == null)
             {
@@ -179,7 +206,6 @@ namespace HALI_RandomGenetics
             //This is for if the gene can't have a prerequisite and it does
             if (canHavePrerequisite == false)
             {
-
                 if (g?.prerequisite != null)
                 {
 
@@ -187,10 +213,8 @@ namespace HALI_RandomGenetics
                 }
                 if (ModsConfig.IsActive("redmattis.betterprerequisites"))
                 {
-                    if (CheckBetterPrerequisitesEmpty(g))
-                    {
-                        return true;
-                    }
+                    return CheckBetterPrerequisitesEmpty(g);
+                    
                 }
                 return true;
             }
@@ -220,7 +244,6 @@ namespace HALI_RandomGenetics
                         return true;
                     }
                 }
-
                 return true;
             }
             else
@@ -241,7 +264,6 @@ namespace HALI_RandomGenetics
         /// <returns>returns true if empty</returns>
         private bool CheckBetterPrerequisitesEmpty(GeneDef g)
         {
-
             if (!g.HasModExtension<BetterPrerequisites.GenePrerequisites>())
             {
                 return true;
@@ -259,9 +281,6 @@ namespace HALI_RandomGenetics
         /// <returns>True if prerequisites match</returns>
         private bool CheckBetterPrerequisites(GeneDef g)
         {
-
-            //Log.Message("Checking better prerequisites");
-
             if (!g.HasModExtension<BetterPrerequisites.GenePrerequisites>())
             {
                 return false;
@@ -302,7 +321,6 @@ namespace HALI_RandomGenetics
                     }
                 }
             }
-
             return true;
         }
 
@@ -310,195 +328,11 @@ namespace HALI_RandomGenetics
         {
             for (int i = 0; i < timesToPerform; i++)
             {
-                int Rvalue = Rand.Range(0, possibleVals.Count() + filler);
-                if (Rvalue < possibleVals.Count)
+                int chanceValue = Rand.Range(0, weight + filler);
+                if (chanceValue < weight)
                 {
-                    pawn.genes.AddGene(possibleVals[Rvalue], isXenogene);
-
+                    pawn.genes.AddGene(possibleVals.RandomElement(), isXenogene);
                 }
-
-            }
-            return;
-        }
-    }
-
-
-    public class ColorFilterList
-    {
-
-        public Color colorToCheck;
-        public float toleranceLevel = 0.30f;
-        public List<string> excluded;
-        public int filler = 0;
-        public int weight = 1;
-        public String defType = "Verse.GeneDef";
-        public int timesToPerform = 1;
-        public ColorType colorType;
-        public SimilarBy similarBy = 0;
-
-        public enum ColorType
-        {
-            HairColor, SkinColor
-        }
-
-        public enum SimilarBy
-        {
-            RGB, Hue, Sat, Val, SatVal
-        }
-
-        protected internal int totalPossibilities = 0;
-        protected internal List<GeneDef> matchingColors;
-        protected internal bool filterCalculated = false;
-
-
-        public bool VerifyValues()
-        {
-            if (filterCalculated)
-            {
-                return true;
-            }
-
-            switch (colorType)
-            {
-                case ColorType.HairColor:
-
-                    matchingColors = DefDatabase<GeneDef>.AllDefsListForReading
-                    .Where(g =>
-                    g.biostatMet == 0 &&
-                    g.biostatCpx == 0 &&
-                    g?.exclusionTags?.Contains("HairColor") == true &&
-                    g.hairColorOverride.HasValue &&
-                    SimilarColor(g.hairColorOverride.Value, colorToCheck, toleranceLevel)
-                    && (excluded?.Any() == true ? (excluded.Contains(g.defName) == false) : true) == true
-
-                    ).ToList();
-                    filterCalculated = true;
-                    if (matchingColors.Count == 0)
-                    {
-                        Log.Warning("No similar HairColor were found for ColorFilterList with conditions " + ToString());
-                        return false;
-                    }
-                    totalPossibilities = matchingColors.Count + filler;
-                    return filterCalculated;
-
-                case ColorType.SkinColor:
-
-                    matchingColors = DefDatabase<GeneDef>.AllDefsListForReading
-                    .Where(g =>
-                    g.biostatMet == 0 &&
-                    g.biostatCpx == 0 &&
-                    g?.exclusionTags?.Contains("SkinColorOverride") == true &&
-                    g.skinColorOverride.HasValue &&
-                    SimilarColor(g.skinColorOverride.Value, colorToCheck, toleranceLevel)
-
-                    && (excluded?.Any() == true ? (excluded.Contains(g.defName) == false) : true) == true
-                    ).ToList();
-
-                    filterCalculated = true;
-                    if (matchingColors.Count == 0)
-                    {
-                        Log.Warning("No similar SkinColorOverride were found for ColorFilterList with conditions " + ToString());
-                        return false;
-                    }
-                    totalPossibilities = matchingColors.Count + filler;
-                    return filterCalculated;
-                default:
-                    Log.Error("You entered the wrong tag for <colorType> it should be <colorType>SkinColor</colorType> or <colorType>HairColor</colorType>" + ToString());
-                    return false;
-            }
-
-        }
-
-        public override string ToString()
-        {
-            if (excluded == null)
-            {
-                return
-                    "\ncolorType = " + colorType.ToString() +
-                    "\ncolorToCheck = " + colorToCheck.ToString() +
-                    "\nsimilarBy = " + similarBy.ToString() +
-                    "\ntoleranceLevel = " + toleranceLevel +
-                    "\nfiller = " + filler +
-                    "\nweight = " + weight +
-                    "\ndefType = " + defType +
-                    "\nexcluded = null";
-
-            }
-            else
-            {
-                return
-                    "\ncolorType = " + colorType.ToString() +
-                    "\ncolorToCheck = " + colorToCheck.ToString() +
-                    "\nsimilarBy = " + similarBy.ToString() +
-                    "\ntoleranceLevel = " + toleranceLevel +
-                    "\nfiller = " + filler +
-                    "\nweight = " + weight +
-                    "\ndefType = " + defType +
-                    "\nexcluded = " + String.Join(", ", excluded.ToArray());
-            }
-
-        }
-
-        private bool SimilarColor(Color geneColor, Color filterColor, float toleranceLevel)
-        {
-            float geneValue;
-            float filterValue;
-
-            switch (similarBy)
-            {
-                case SimilarBy.RGB:
-                    return
-                Math.Abs(geneColor.r - filterColor.r) < toleranceLevel &&
-                Math.Abs(geneColor.g - filterColor.g) < toleranceLevel &&
-                Math.Abs(geneColor.b - filterColor.b) < toleranceLevel;
-                case SimilarBy.Hue:
-
-
-                    Color.RGBToHSV(geneColor, out geneValue, out _, out _);
-                    Color.RGBToHSV(filterColor, out filterValue, out _, out _);
-                    return Math.Abs(geneValue - filterValue) < toleranceLevel;
-
-                case SimilarBy.Sat:
-                    Color.RGBToHSV(geneColor, out _, out geneValue, out _);
-                    Color.RGBToHSV(filterColor, out _, out filterValue, out _);
-                    return Math.Abs(geneValue - filterValue) < toleranceLevel;
-
-
-                case SimilarBy.Val:
-                    Color.RGBToHSV(geneColor, out _, out _, out geneValue);
-                    Color.RGBToHSV(filterColor, out _, out _, out filterValue);
-                    return Math.Abs(geneValue - filterValue) < toleranceLevel;
-
-                case SimilarBy.SatVal:
-                    Color.RGBToHSV(geneColor, out _, out geneValue, out _);
-                    Color.RGBToHSV(filterColor, out _, out filterValue, out _);
-                    if (Math.Abs(geneValue - filterValue) < toleranceLevel)
-                    {
-                        Color.RGBToHSV(geneColor, out _, out _, out geneValue);
-                        Color.RGBToHSV(filterColor, out _, out _, out filterValue);
-                        return Math.Abs(geneValue - filterValue) < toleranceLevel;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                default:
-                    Log.Error("You entered the wrong tag for <similarBy> it should be RGB, Hue, Sat, or Val." + ToString());
-                    return false;
-            }
-        }
-
-
-        public void AssignGenes(Pawn pawn, bool isXenogene)
-        {
-            for (int i = 0; i < timesToPerform; i++)
-            {
-                int Rvalue = Rand.Range(0, totalPossibilities);
-                if (Rvalue < matchingColors.Count)
-                {
-                    pawn.genes.AddGene(matchingColors[Rvalue], isXenogene);
-                }
-
             }
             return;
         }
