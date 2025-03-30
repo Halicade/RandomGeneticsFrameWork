@@ -11,7 +11,7 @@ namespace HALI_RandomGenetics
 
         public Color colorToCheck;
         public float toleranceLevel = 0.30f;
-        public List<string> excluded;
+        public List<GeneDef> excluded;
         public int filler = 0;
         public int weight = 1;
         public String defType = "Verse.GeneDef";
@@ -76,7 +76,7 @@ namespace HALI_RandomGenetics
                     g?.exclusionTags?.Contains("HairColor") == true &&
                     g.hairColorOverride.HasValue &&
                     SimilarColor(g.hairColorOverride.Value, toleranceLevel)
-                    && (excluded?.Any() == true ? (excluded.Contains(g.defName) == false) : true) == true
+                    && (excluded.NullOrEmpty() ? true : (excluded.Contains(g) == false))
 
                     ).ToList();
                     filterCalculated = true;
@@ -98,7 +98,7 @@ namespace HALI_RandomGenetics
                     g.skinColorOverride.HasValue &&
                     SimilarColor(g.skinColorOverride.Value, toleranceLevel)
 
-                    && (excluded?.Any() == true ? (excluded.Contains(g.defName) == false) : true) == true
+                    && (excluded.NullOrEmpty() ? true : (excluded.Contains(g) == false))
                     ).ToList();
 
                     filterCalculated = true;
@@ -140,7 +140,7 @@ namespace HALI_RandomGenetics
                     "\nfiller = " + filler +
                     "\nweight = " + weight +
                     "\ndefType = " + defType +
-                    "\nexcluded = " + String.Join(", ", excluded.ToArray());
+                    "\nexcluded = ";// + String.Join(", ", excluded.ToArray());
             }
         }
 

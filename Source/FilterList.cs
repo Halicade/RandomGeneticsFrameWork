@@ -21,7 +21,7 @@ namespace HALI_RandomGenetics
         public List<string> needsPrerequisite;
         public bool canHaveAbility = true;
         public bool needsAbility = false;
-        public List<string> excluded;
+        public List<GeneDef> excluded;
         public String defType = "Verse.GeneDef";
         public int weight = 1;
         public int timesToPerform = 1;
@@ -108,7 +108,7 @@ namespace HALI_RandomGenetics
 
             g.GetType().ToString().Equals(defType) &&
             CheckExclusionTags(g) &&
-            (excluded == null ? true : excluded?.Contains(g.defName) == false)
+            (excluded == null ? true : excluded.Contains(g) == false)
             ).ToList();
 
             valsCalculated = true;
@@ -161,8 +161,10 @@ namespace HALI_RandomGenetics
             }
             tostringText += "\ncanHaveAbility = " + canHaveAbility +
                         "\nneedsAbility = " + needsAbility +
-                        "\ndefType = " + defType +
-                        "\nexcluded = ";
+                        "\ndefType = " + defType 
+                        //"\nexcluded = "
+                        ;
+            /*
             if (excluded != null)
             {
                 tostringText += String.Join(", ", excluded.ToArray());
@@ -170,7 +172,7 @@ namespace HALI_RandomGenetics
             else
             {
                 tostringText += "null";
-            }
+            }*/
             return tostringText;
         }
 

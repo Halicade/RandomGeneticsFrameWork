@@ -55,11 +55,14 @@
 					</li>
 					<li>
 						<!--Possibility 2-->
-						<genes>
-							<li>Skin_InkBlack</li>
-							<li>Tail_Furry</li>
-						</genes>
-					
+						<randomGenes>
+							<li>
+								<genes>
+									<li>Skin_InkBlack</li>
+									<li>Tail_Furry</li>
+								</genes>
+							</li>
+						</randomGenes>
 					</li>
 				</randomAny>
 			</li>

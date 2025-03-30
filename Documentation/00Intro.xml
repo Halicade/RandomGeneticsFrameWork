@@ -40,20 +40,22 @@
 		<li>You will of course receive errors if your xenotypes are using any genes made using this when trying to spawn them.</li>
 	</compatibility>
 	
-	
 	<credits>
 		<mods>
 			<li>Goji's Fantasy Race: Merren</li>
 			<li>Det's Xenotypes - Avaloi</li>
 			
-			<note>These mods were my main influence in creating this.
-				They each had functions for creating their own random genes which showed me how to even start this mod. Thank you!</note>
+			<note>These mods were my main influence in creating this. They each had functions for creating their own random genes which showed me how to even start this mod. Thank you!</note>
 		</mods>
-		
 		
 		<author>
 			<li>RedMattis</li>
 			<note>Allowed me to use the code for their Big and Small - Framework mod</note>
+		</author>
+		
+		<author>
+			<li>Bradson</li>
+			<note>Showed me how to edit the gene menu. Made displaying possible genes now possible!</note>
 		</author>
 	
 	</credits>

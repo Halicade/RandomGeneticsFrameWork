@@ -221,9 +221,9 @@
 				<geneList>
 					<li>
 						<genesAndWeight>
-							<li>
+							<li MayRequire="halicade.randomgenes">
 								<genes>
-									<li>TEST_HALI_RandomTail</li>
+									<li>HALI_RandomFunctionalTail</li>
 								</genes>
 							</li>
 							<li>
