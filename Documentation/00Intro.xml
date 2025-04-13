@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Defs>
+<DontCopyThis>
 	
 	<Description>
 		<li>Random Genetics Framework is designed to generate random genes for pawns based on your own conditions.</li>
@@ -60,4 +60,4 @@
 	
 	</credits>
 
-</Defs>
+</DontCopyThis>

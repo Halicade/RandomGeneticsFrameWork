@@ -9,6 +9,9 @@ namespace HALI_RandomGenetics
     {
         public List<ColorFilterList> colorFilterList;
         public int filler = 0;
+        public GeneLoc geneLoc = 0;
+
+        public enum GeneLoc { Follow, Inverse, Genotype, Xenotype }
 
         protected internal bool verifyCalculated = false;
         protected internal int totalWeight = 0;
@@ -49,6 +52,20 @@ namespace HALI_RandomGenetics
         {
             int Rvalue = Rand.Range(0, totalPossibilities);
             int totalweights = 0;
+
+            switch (geneLoc)
+            {
+                case GeneLoc.Inverse:
+                    isXenogene = !isXenogene;
+                    break;
+                case GeneLoc.Genotype:
+                    isXenogene = false;
+                    break;
+                case GeneLoc.Xenotype:
+                    isXenogene = true;
+                    break;
+            }
+
             for (int i = 0; i < colorFilterList.Count; i++)
             {
                 totalweights += colorFilterList[i].weight;

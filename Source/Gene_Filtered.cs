@@ -8,6 +8,9 @@ namespace HALI_RandomGenetics
     {
         public List<FilterList> filterList;
         public int filler = 0;
+        public GeneLoc geneLoc = 0;
+
+        public enum GeneLoc { Follow, Inverse, Genotype, Xenotype }
 
         protected internal bool verifyCalculated = false;
         protected internal int totalPossibilities = 0;
@@ -55,6 +58,20 @@ namespace HALI_RandomGenetics
                 //filler value was reached
                 return;
             }
+
+            switch (geneLoc)
+            {
+                case GeneLoc.Inverse:
+                    isXenogene = !isXenogene;
+                    break;
+                case GeneLoc.Genotype:
+                    isXenogene = false;
+                    break;
+                case GeneLoc.Xenotype:
+                    isXenogene = true;
+                    break;
+            }
+
             int searchedweights = 0;
             for (int i = 0; i < filterList.Count; i++)
             {
@@ -85,11 +102,10 @@ namespace HALI_RandomGenetics
                     valueString: "HALI_RG_Chance".Translate(GetChanceInternal(i)),
                     reportText: filterList[i].FilterChance + filterList[i].RepetitionTimes + filterList[i].GetPossibleValsAsText,
                     displayPriorityWithinCategory: priority - i,
-                    hyperlinks: Dialog_InfoCard.DefsToHyperlinks(filterList[i].MyGeneDefHyperlinks)
+                    hyperlinks: Dialog_InfoCard.DefsToHyperlinks(filterList[i].GetMyGeneDefHyperlinks())
                     );
             }
         }
     }
-
 
 }

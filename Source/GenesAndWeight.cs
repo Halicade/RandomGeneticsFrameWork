@@ -35,7 +35,6 @@ namespace HALI_RandomGenetics
                     colorFilterList[i].AssignGenes(pawn, isXenogene);
                 }
             }
-
             return skip;
         }
 
@@ -51,7 +50,7 @@ namespace HALI_RandomGenetics
 
         public IEnumerable<DefHyperlink> GetFilterGeneDefHyperlinks(int filterToLookAt)
         {
-            foreach (DefHyperlink filterdGenes in filterList[filterToLookAt].MyGeneDefHyperlinks)
+            foreach (DefHyperlink filterdGenes in filterList[filterToLookAt].GetMyGeneDefHyperlinks())
             {
                 yield return filterdGenes;
             }

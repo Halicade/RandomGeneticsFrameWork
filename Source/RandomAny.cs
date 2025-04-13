@@ -33,7 +33,7 @@ namespace HALI_RandomGenetics
 
         public IEnumerable<DefHyperlink> GetFilterListAsHyperlinks(int i)
         {
-            foreach (DefHyperlink Filters in filterList[i].MyGeneDefHyperlinks)
+            foreach (DefHyperlink Filters in filterList[i].GetMyGeneDefHyperlinks())
             {
                 yield return Filters;
             }
@@ -88,7 +88,6 @@ namespace HALI_RandomGenetics
                     }
                 }
             }
-
             if (!filterList.NullOrEmpty())
             {
                 for (int i = filterList.Count - 1; i >= 0; i--)
@@ -99,7 +98,6 @@ namespace HALI_RandomGenetics
                     }
                 }
             }
-
             if (!colorFilterList.NullOrEmpty())
             {
                 for (int i = colorFilterList.Count - 1; i >= 0; i--)

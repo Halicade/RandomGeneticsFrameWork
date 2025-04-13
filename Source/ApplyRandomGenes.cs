@@ -2,7 +2,6 @@
 
 namespace HALI_RandomGenetics
 {
-
     public class ApplyRandomGenes : Gene
     {
         public override void PostAdd()

@@ -31,16 +31,13 @@ namespace HALI_RandomGenetics
         protected internal bool valsCalculated = false;
         protected internal int totalPossibilities = 0;
 
-        public IEnumerable<DefHyperlink> MyGeneDefHyperlinks
+        public IEnumerable<DefHyperlink> GetMyGeneDefHyperlinks()
         {
-            get
+            if (possibleVals.Count <= 500)
             {
-                if (possibleVals.Count <= 500)
+                for (int i = 0; i < possibleVals.Count; i++)
                 {
-                    for (int i = 0; i < possibleVals.Count; i++)
-                    {
-                        yield return new DefHyperlink(possibleVals[i]);
-                    }
+                    yield return new DefHyperlink(possibleVals[i]);
                 }
             }
         }
@@ -90,7 +87,6 @@ namespace HALI_RandomGenetics
                 valsCalculated = true;
                 return false;
             }
-
 
             possibleVals = DefDatabase<GeneDef>.AllDefsListForReading
             .Where(g =>
@@ -210,13 +206,11 @@ namespace HALI_RandomGenetics
             {
                 if (g?.prerequisite != null)
                 {
-
                     return false;
                 }
                 if (ModsConfig.IsActive("redmattis.betterprerequisites"))
                 {
-                    return CheckBetterPrerequisitesEmpty(g);
-                    
+                    return CheckBetterPrerequisitesEmpty(g);   
                 }
                 return true;
             }

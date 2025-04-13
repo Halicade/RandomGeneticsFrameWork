@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Defs>
+<DontCopyThis>
 	
 	<!--
 	Unlike the other pages, this page should not be copied into the regular Defs folder
@@ -8,6 +8,21 @@
 		<li>This gene assignment follows the same logic as vanilla.
 			<li>if the same gene is added as a germline gene, it will not be added.</li>
 			<li>if the same gene is added as a xenogene, there will be a duplicate.</li>
+		</li>
+		
+		
+		<li>You can use <geneLoc>textHere</geneLoc> to change where the gene is stored.
+		</li>
+		<li>There are 4 different options. 'Follow' is the default
+			<li>Follow - follow the initial genes inheritance location</li>
+			<li>Inverse - the inverse of the initial genes inheritance location</li>
+			<li>Endogene - Genes will always spawn as a endogene</li>
+			<li>Xenogene - Genes will always spawn as a xenogene</li>
+		</li>
+		<li>geneLoc goes on the root of the modextension like below</li>
+		<li Class="HALI_RandomGenetics.Gene_Similar_Color">
+			<geneLoc>Inverse</geneLoc>
+			<!--rest of logic here-->
 		</li>
 	</notes>
 	
@@ -26,7 +41,6 @@
 		</li>
 	
 	</changes>
-	
 	
 	
 	<exclusions>
@@ -70,7 +84,6 @@
 		
 		</SkinColorOverride>
 	</exclusions>
-	
 	
 	
 	<MayRequire>
@@ -133,7 +146,6 @@
 	</MayRequire>
 	
 	
-	
 	<CherryPicker>
 		<!--
 		If a gene is removed with Cherry Picker or through similar mods, the framework will respect that choice
@@ -169,7 +181,6 @@
 	</CherryPicker>
 	
 	
-	
 	<!--
 	with filters, ExclusionTags for aptitudes (skills) and chemicals are in the same style as below
 	Aptitude_defName or Addiction_defName
@@ -186,7 +197,6 @@
 	</exclusionTags>
 	
 	
-	
 	<!--
 	For genes like the ones used in Vanilla Races Expanded - Android, and Vanilla Races Expanded - Insector
 	you will need to change the filter tage <defType> by default this is Verse.GeneDef
@@ -199,7 +209,6 @@
 	<defType>
 		<li>VanillaRacesExpandedInsector.GenelineGeneDef</li>
 	</defType>
-	
 	
 	
 	<!--
@@ -239,4 +248,4 @@
 	</GeneDef>
 
 
-</Defs>
+</DontCopyThis>

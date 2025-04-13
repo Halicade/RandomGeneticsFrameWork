@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using Verse;
+using static HALI_RandomGenetics.Any_List_Random;
 
 namespace HALI_RandomGenetics
 {
@@ -8,6 +9,9 @@ namespace HALI_RandomGenetics
     {
         public List<GeneticList> geneList;
         private bool verifyCalculated = false;
+        public GeneLoc geneLoc = 0;
+
+        public enum GeneLoc { Follow, Inverse, Genotype, Xenotype }
 
         public bool VerifyValues()
         {
@@ -30,6 +34,19 @@ namespace HALI_RandomGenetics
 
         public void AssignGene(Pawn pawn, bool isXenogene)
         {
+
+            switch (geneLoc)
+            {
+                case GeneLoc.Inverse:
+                    isXenogene = !isXenogene;
+                    break;
+                case GeneLoc.Genotype:
+                    isXenogene = false;
+                    break;
+                case GeneLoc.Xenotype:
+                    isXenogene = true;
+                    break;
+            }
 
             for (int i = 0; i < geneList.Count; i++)
             {

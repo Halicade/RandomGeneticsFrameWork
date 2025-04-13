@@ -10,6 +10,9 @@ namespace HALI_RandomGenetics
 
         public List<RandomAny> randomAny;
         public int filler = 0;
+        public GeneLoc geneLoc = 0;
+
+        public enum GeneLoc { Follow, Inverse, Endogene, Xenogene }
 
         protected internal bool verifyCalculated = false;
         protected internal int totalPossibilities = 0;
@@ -155,6 +158,19 @@ namespace HALI_RandomGenetics
             {
                 //filler value was reached
                 return;
+            }
+
+            switch (geneLoc)
+            {
+                case GeneLoc.Inverse:
+                    isXenogene = !isXenogene;
+                    break;
+                case GeneLoc.Endogene:
+                    isXenogene = false;
+                    break;
+                case GeneLoc.Xenogene:
+                    isXenogene = true;
+                    break;
             }
 
             int searchedweights = 0;

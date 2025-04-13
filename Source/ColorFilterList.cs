@@ -113,7 +113,6 @@ namespace HALI_RandomGenetics
                     Log.Error("You entered the wrong tag for <colorType> it should be <colorType>SkinColor</colorType> or <colorType>HairColor</colorType>" + ToString());
                     return false;
             }
-
         }
 
         public override string ToString()
