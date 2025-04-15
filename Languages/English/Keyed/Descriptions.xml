@@ -38,10 +38,10 @@
 	<HALI_RG_GeneLocSmallDesc2>Endogene</HALI_RG_GeneLocSmallDesc2>
 	<HALI_RG_GeneLocSmallDesc3>Xenogene</HALI_RG_GeneLocSmallDesc3>
 	
-	<HALI_RG_GeneLocLargeDesc0>Genes will be installed in the same category as where this gene is installed</HALI_RG_GeneLocLargeDesc0>
-	<HALI_RG_GeneLocLargeDesc1>Genes will be installed in the opposite category of where this gene is installed</HALI_RG_GeneLocLargeDesc1>
-	<HALI_RG_GeneLocLargeDesc2>Genes will be installed as a Endogene</HALI_RG_GeneLocLargeDesc2>
-	<HALI_RG_GeneLocLargeDesc3>Genes will be installed as a Xenogene</HALI_RG_GeneLocLargeDesc3>
+	<HALI_RG_GeneLocLargeDesc0>Genes will be installed in the same category as where this gene is installed.</HALI_RG_GeneLocLargeDesc0>
+	<HALI_RG_GeneLocLargeDesc1>Genes will be installed in the opposite category of where this gene is installed.</HALI_RG_GeneLocLargeDesc1>
+	<HALI_RG_GeneLocLargeDesc2>Genes will be installed as a Endogene.</HALI_RG_GeneLocLargeDesc2>
+	<HALI_RG_GeneLocLargeDesc3>Genes will be installed as a Xenogene.</HALI_RG_GeneLocLargeDesc3>
 
 
 </LanguageData>
