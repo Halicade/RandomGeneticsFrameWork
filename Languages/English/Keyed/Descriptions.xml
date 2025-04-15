@@ -3,7 +3,7 @@
 	
 	<HALI_RG_NoGenes>No genes found for this.</HALI_RG_NoGenes>
 	<HALI_RG_Category>Category: {0}</HALI_RG_Category>
-	<HALI_RG_Category_NoLetter>Category </HALI_RG_Category_NoLetter>
+	<HALI_RG_Category_NoLetter>Category</HALI_RG_Category_NoLetter>
 	<HALI_RG_Chance>Chance {0}%</HALI_RG_Chance>
 	<HALI_RG_EachGeneHas>Each gene has a 1/{0} chance of being assigned.\n</HALI_RG_EachGeneHas>
 	<HALI_RG_Skip>The next {0} category(ies) will be skipped.\n</HALI_RG_Skip>
@@ -31,4 +31,17 @@
 	<HALI_RG_AnyFilter>Set: {0} filter {1}</HALI_RG_AnyFilter>
 	<HALI_RG_AnyColors>Set: {0} colors {1}</HALI_RG_AnyColors>
 	
+	<HALI_RG_GenesLoc>Gene location</HALI_RG_GenesLoc>
+	
+	<HALI_RG_GeneLocSmallDesc0>Same</HALI_RG_GeneLocSmallDesc0>
+	<HALI_RG_GeneLocSmallDesc1>Inverse</HALI_RG_GeneLocSmallDesc1>
+	<HALI_RG_GeneLocSmallDesc2>Endogene</HALI_RG_GeneLocSmallDesc2>
+	<HALI_RG_GeneLocSmallDesc3>Xenogene</HALI_RG_GeneLocSmallDesc3>
+	
+	<HALI_RG_GeneLocLargeDesc0>Genes will be installed in the same category as where this gene is installed</HALI_RG_GeneLocLargeDesc0>
+	<HALI_RG_GeneLocLargeDesc1>Genes will be installed in the opposite category of where this gene is installed</HALI_RG_GeneLocLargeDesc1>
+	<HALI_RG_GeneLocLargeDesc2>Genes will be installed as a Endogene</HALI_RG_GeneLocLargeDesc2>
+	<HALI_RG_GeneLocLargeDesc3>Genes will be installed as a Xenogene</HALI_RG_GeneLocLargeDesc3>
+
+
 </LanguageData>

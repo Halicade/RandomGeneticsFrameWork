@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
+using static HarmonyLib.Code;
 
 namespace RandomGenetics.Source
 {
@@ -34,7 +35,16 @@ namespace RandomGenetics.Source
                 Multi_Rand_List multi = __instance.GetModExtension<Multi_Rand_List>();
                 if (multi.VerifyValues())
                 {
-                    foreach (var basestat in multi.ReturnStatDrawEntries(priority--, category++))
+
+                    string geneLoc = multi.geneLoc.ToString("d");
+                    yield return new StatDrawEntry(
+                        StatCategoryDefOf.Genetics,
+                        "HALI_RG_GenesLoc".Translate(),
+                        ("HALI_RG_GeneLocSmallDesc" + geneLoc).Translate(),
+                        ("HALI_RG_GeneLocLargeDesc" + geneLoc).Translate(),
+                        priority--);
+
+                    foreach (StatDrawEntry basestat in multi.ReturnStatDrawEntries(priority--, category++))
                     {
                         yield return basestat;
                         priority--;
@@ -51,10 +61,18 @@ namespace RandomGenetics.Source
                 Gene_Similar_Color similar_Color = __instance.GetModExtension<Gene_Similar_Color>();
                 if (similar_Color.VerifyValues())
                 {
+                    string geneLoc = similar_Color.geneLoc.ToString("d");
+                    yield return new StatDrawEntry(
+                        StatCategoryDefOf.Genetics,
+                        "HALI_RG_GenesLoc".Translate(),
+                        ("HALI_RG_GeneLocSmallDesc" + geneLoc).Translate(),
+                        ("HALI_RG_GeneLocLargeDesc" + geneLoc).Translate(),
+                        priority--);
+
                     IEnumerable<StatDrawEntry> SimColor = similar_Color.ReturnStatDrawEntries(priority--, category++);
                     if (SimColor.Any())
                     {
-                        foreach (var basestat in SimColor)
+                        foreach (StatDrawEntry basestat in SimColor)
                         {
                             yield return basestat;
                             priority--;
@@ -77,10 +95,18 @@ namespace RandomGenetics.Source
                 Gene_Filtered filtered = __instance.GetModExtension<Gene_Filtered>();
                 if (filtered.VerifyValues())
                 {
+                    string geneLoc = filtered.geneLoc.ToString("d");
+                    yield return new StatDrawEntry(
+                        StatCategoryDefOf.Genetics,
+                        "HALI_RG_GenesLoc".Translate(),
+                        ("HALI_RG_GeneLocSmallDesc" + geneLoc).Translate(),
+                        ("HALI_RG_GeneLocLargeDesc" + geneLoc).Translate(),
+                        priority--);
+
                     IEnumerable<StatDrawEntry> filtList = filtered.ReturnStatDrawEntries(priority--, category++);
                     if (filtered.HasAny)
                     {
-                        foreach (var basestat in filtList)
+                        foreach (StatDrawEntry basestat in filtList)
                         {
                             yield return basestat;
                             priority--;
@@ -102,11 +128,19 @@ namespace RandomGenetics.Source
                 Any_List_Random anyFilter = __instance.GetModExtension<Any_List_Random>();
                 if (anyFilter.VerifyValues())
                 {
+                    string geneLoc = anyFilter.geneLoc.ToString("d");
+                    yield return new StatDrawEntry(
+                        StatCategoryDefOf.Genetics,
+                        "HALI_RG_GenesLoc".Translate(),
+                        ("HALI_RG_GeneLocSmallDesc" + geneLoc).Translate(),
+                        ("HALI_RG_GeneLocLargeDesc" + geneLoc).Translate(),
+                        priority--);
+
                     IEnumerable<StatDrawEntry> anyList = anyFilter.ReturnStatDrawEntries(priority--, category++);
                     if (anyFilter.HasAny)
                     {
 
-                        foreach (var basestat in anyList)
+                        foreach (StatDrawEntry basestat in anyList)
                         {
                             yield return basestat;
                             priority--;

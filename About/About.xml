@@ -8,6 +8,18 @@
 		<li>1.5</li>
 	</supportedVersions>
 	
+	<modDependencies>
+		<li>
+			<packageId>ludeon.rimworld.biotech</packageId>
+			<displayName>Biotech</displayName>
+		</li>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+			<steamWorkshopUrl>https://steamcommunity.com/workshop/filedetails/?id=2009463077</steamWorkshopUrl>
+		</li>
+	</modDependencies>
+	
 	<loadAfter>
 		<li>ludeon.rimworld.biotech</li>
 	</loadAfter>

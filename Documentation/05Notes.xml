@@ -29,8 +29,8 @@
 	<changes>
 		<!--
 		EBSG has a patch that will changes metabolism of the strongStomach gene to -3.
-		Previously, it would also add EBSG_ContractedStomach (metabolism +2) to any xeno that has strongStomach gene.
-		Because it would not affect the genes inside modextensions, you will need to do something like below if being entered manually.
+		In the process, it adds the gene EBSG_ContractedStomach as an alternative for the pigskin xenotype.
+		You would need to do something like below if being entered manually.
 		Of course you can ignore this as well. Just take care to note the metabolism change.
 		-->
 		<li>
